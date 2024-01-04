@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LapTracks</string>
+    <string name="participants">Participants</string>
+    <string name="intervals">Intervals</string>
+    <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
+    <string name="distance">Distance</string>
+    <string name="practice_summary">Practice Summary</string>
+    <string name="back">Back</string>
+</resources>
