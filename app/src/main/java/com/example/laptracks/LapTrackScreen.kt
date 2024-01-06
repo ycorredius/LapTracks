@@ -23,15 +23,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.laptracks.data.DataSource
-import com.example.laptracks.ui.theme.IntervalScreen
-import com.example.laptracks.ui.theme.ParticipantScreen
-import com.example.laptracks.ui.theme.PracticeSummaryScreen
+import com.example.laptracks.ui.screens.IntervalScreen
+import com.example.laptracks.ui.screens.ParticipantScreen
+import com.example.laptracks.ui.screens.PracticeSummaryScreen
+import com.example.laptracks.ui.screens.ResultScreen
 
 
 enum class LapTrackScreen(@StringRes val title: Int){
   Participants(title = R.string.participants),
   Intervals(title = R.string.intervals),
-  PracticeSummary(title = R.string.practice_summary)
+  PracticeSummary(title = R.string.practice_summary),
+  Results(title = R.string.results)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +52,7 @@ fun LapTrackTopBar(
             contentDescription = stringResource(R.string.back))
         }
       }
-    }
+    },
   )
 }
 
@@ -92,8 +94,11 @@ fun LapTrackApp(viewModel: LapTrackViewModel = viewModel()){
         IntervalScreen(
           participants = uiState.participants,
           intervals = DataSource.intervals,
+          selectedInterval = uiState.interval,
           onIntervalChange = {viewModel.setInterval(it)},
-          onNextButtonClick = {navController.navigate(LapTrackScreen.PracticeSummary.name)}
+          onNextButtonClick = {navController.navigate(LapTrackScreen.PracticeSummary.name)},
+          onCancelButtonClick = {viewModel.onResetClick(navController)}
+
         )
       }
 
@@ -104,9 +109,27 @@ fun LapTrackApp(viewModel: LapTrackViewModel = viewModel()){
           onParticipantClick = { participant , time ->
             viewModel.setParticipantTime(participant,time)
           },
-          participantTimes = uiState.participantTimes
+          participantTimes = uiState.participantTimes,
+          onFinishClick = {navController.navigate(LapTrackScreen.Results.name)},
+          onCancelButtonClick = {viewModel.onResetClick(navController)}
+
+        )
+      }
+
+      composable(route = LapTrackScreen.Results.name){
+        ResultScreen(
+          participants = uiState.participants,
+          participantTimes = uiState.participantTimes,
+          onCompleteClick = { viewModel.onResetClick(navController) }
         )
       }
     }
   }
+}
+
+private fun LapTrackViewModel.onResetClick(
+  navController: NavHostController
+){
+  this.resetWorkout()
+  navController.popBackStack(LapTrackScreen.Participants.name, inclusive = false)
 }

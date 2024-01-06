@@ -7,4 +7,6 @@
     <string name="distance">Distance</string>
     <string name="practice_summary">Practice Summary</string>
     <string name="back">Back</string>
+    <string name="results">Results</string>
+    <string name="complete">Complete</string>
 </resources>

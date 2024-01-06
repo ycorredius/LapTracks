@@ -45,4 +45,8 @@ class LapTrackViewModel: ViewModel() {
       currentState.copy(participantTimes = newMap)
     }
   }
+
+  fun resetWorkout(){
+    _uiState.value = LapTrackState()
+  }
 }
