@@ -1,4 +1,4 @@
-package com.example.laptracks.ui.screens
+package com.example.laptracks.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,18 +12,30 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.laptracks.R
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Composable
 fun ResultScreen(
   participants: List<String>,
   participantTimes: Map<String, List<String>>,
-  onCompleteClick: () -> Unit = {}
+  onCompleteClick: (String,String) -> Unit
 ) {
+
+  val date = SimpleDateFormat("dd-MM-yyy")
+  val currentDate = date.format(Date())
+  var workout = ""
+  participants.forEach{
+     participant ->
+      val result = participant + participantTimes.getValue(participant).joinToString(", ") +"\n"
+      workout += result
+    }
   Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
     Column(modifier = Modifier) {
       participants.forEach { participant ->
@@ -47,7 +59,7 @@ fun ResultScreen(
       }
     }
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-      Button(onClick = onCompleteClick) {
+      Button(onClick = { onCompleteClick(currentDate ,workout) }) {
         Text(stringResource(R.string.complete))
       }
     }
@@ -59,6 +71,7 @@ fun ResultScreen(
 fun ResultScreenPreview() {
   ResultScreen(
     participants = listOf("Billy", "Jamie", "Moe"),
-    participantTimes = mapOf("Billy" to listOf("05:30"), "Jamie" to listOf(), "Moe" to listOf())
+    participantTimes = mapOf("Billy" to listOf("05:30"), "Jamie" to listOf(), "Moe" to listOf()),
+    onCompleteClick = {subject: String, summary: String ->},
   )
 }

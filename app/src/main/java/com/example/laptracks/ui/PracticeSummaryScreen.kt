@@ -1,4 +1,4 @@
-package com.example.laptracks.ui.screens
+package com.example.laptracks.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

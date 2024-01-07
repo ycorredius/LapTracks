@@ -1,5 +1,7 @@
 package com.example.laptracks
 
+import android.content.Context
+import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,10 +26,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.laptracks.data.DataSource
-import com.example.laptracks.ui.screens.IntervalScreen
-import com.example.laptracks.ui.screens.ParticipantScreen
-import com.example.laptracks.ui.screens.PracticeSummaryScreen
-import com.example.laptracks.ui.screens.ResultScreen
+import com.example.laptracks.ui.IntervalScreen
+import com.example.laptracks.ui.ParticipantScreen
+import com.example.laptracks.ui.PracticeSummaryScreen
+import com.example.laptracks.ui.ResultScreen
 
 
 enum class LapTrackScreen(@StringRes val title: Int){
@@ -117,10 +120,14 @@ fun LapTrackApp(viewModel: LapTrackViewModel = viewModel()){
       }
 
       composable(route = LapTrackScreen.Results.name){
+        val context = LocalContext.current
         ResultScreen(
           participants = uiState.participants,
           participantTimes = uiState.participantTimes,
-          onCompleteClick = { viewModel.onResetClick(navController) }
+          onCompleteClick = {
+            subject: String, workout: String ->
+            shareWorkout(context,subject = subject, workout = workout)
+          }
         )
       }
     }
@@ -132,4 +139,20 @@ private fun LapTrackViewModel.onResetClick(
 ){
   this.resetWorkout()
   navController.popBackStack(LapTrackScreen.Participants.name, inclusive = false)
+}
+
+
+private fun shareWorkout(context: Context, subject: String, workout: String){
+  val intent = Intent(Intent.ACTION_SEND).apply {
+    type = "text/plain"
+    putExtra(Intent.EXTRA_SUBJECT, subject)
+    putExtra(Intent.EXTRA_TEXT, workout)
+  }
+
+  context.startActivity(
+    Intent.createChooser(
+      intent,
+      context.getString(R.string.new_workout)
+    )
+  )
 }
