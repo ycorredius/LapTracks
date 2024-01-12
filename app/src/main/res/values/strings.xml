@@ -6,8 +6,15 @@
     <string name="next">Next</string>
     <string name="distance">Distance</string>
     <string name="practice_summary">Practice Summary</string>
-    <string name="back">Back</string>
+    <string name="back_button">Back</string>
     <string name="results">Results</string>
     <string name="complete">Complete</string>
     <string name="new_workout">New Workout</string>
+    <string name="reset">Reset</string>
+    <string name="students">Students</string>
+    <string name="student_entry">Student Entry</string>
+    <string name="save">Save</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="display_name">Display Name</string>
 </resources>

@@ -2,6 +2,8 @@ plugins {
   id("com.android.application")
   id("org.jetbrains.kotlin.android")
   id("com.google.devtools.ksp") version "1.9.22-1.0.16"
+  kotlin("kapt")
+  id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -64,6 +66,11 @@ dependencies {
   ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
   implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
+  implementation("com.google.dagger:hilt-android:2.44")
+  kapt("com.google.dagger:hilt-android-compiler:2.44")
+  implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+  kapt("androidx.hilt:hilt-compiler:1.1.0")
+
   testImplementation("junit:junit:4.13.2")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -71,4 +78,8 @@ dependencies {
   androidTestImplementation("androidx.compose.ui:ui-test-junit4")
   debugImplementation("androidx.compose.ui:ui-tooling")
   debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+kapt {
+  correctErrorTypes = true
 }

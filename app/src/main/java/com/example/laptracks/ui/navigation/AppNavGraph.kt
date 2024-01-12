@@ -5,7 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 import com.example.laptracks.ui.views.IntervalDestination
+import com.example.laptracks.ui.views.IntervalScreen
 import com.example.laptracks.ui.views.ParticipantDestination
 import com.example.laptracks.ui.views.ParticipantScreen
 import com.example.laptracks.ui.views.StudentEntryDestination
@@ -33,6 +35,10 @@ fun AppNavHost(
         navigateUp = { navController.navigateUp() },
         navigateBack = { navController.popBackStack() }
       )
+    }
+
+    composable(route = IntervalDestination.route){
+      IntervalScreen()
     }
   }
 }

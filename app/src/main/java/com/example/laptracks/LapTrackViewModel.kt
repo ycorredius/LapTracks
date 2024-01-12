@@ -20,7 +20,7 @@ class LapTrackViewModel: ViewModel() {
         }else{
           currentState.participants + listOf(participant)
         }
-      currentState.copy(participants = newParticipants, participantTimes = newParticipants.associateWith { emptyList<String>() })
+      currentState.copy(participants = newParticipants, participantTimes = newParticipants.associateWith { emptyList<Long>() })
     }
   }
 
@@ -31,7 +31,7 @@ class LapTrackViewModel: ViewModel() {
     }
   }
 
-  fun setParticipantTime(participant: String, timeStamp: String){
+  fun setParticipantTime(participant: String, timeStamp: Long){
     _uiState.update {
       currentState ->
       val newMap = currentState.participantTimes.keys.associateWith {
