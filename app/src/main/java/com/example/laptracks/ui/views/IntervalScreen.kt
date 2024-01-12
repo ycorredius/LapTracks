@@ -61,7 +61,7 @@ object IntervalDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntervalScreen(
-  viewModel: WorkoutViewModel = hiltViewModel()
+  viewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()

@@ -66,8 +66,8 @@ dependencies {
   ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
   implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
-  implementation("com.google.dagger:hilt-android:2.44")
-  kapt("com.google.dagger:hilt-android-compiler:2.44")
+  implementation("com.google.dagger:hilt-android:2.50")
+  kapt("com.google.dagger:hilt-android-compiler:2.50")
   implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
   kapt("androidx.hilt:hilt-compiler:1.1.0")
 

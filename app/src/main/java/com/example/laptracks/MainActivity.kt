@@ -9,9 +9,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.example.laptracks.ui.theme.LapTracksTheme
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
-
+//@AndroidEntryPoint If I add this the app breaks
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
