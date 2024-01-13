@@ -20,7 +20,7 @@ class WorkoutViewModel @Inject constructor(
   private val savedStateHandle: SavedStateHandle,
   private val studentRepository: StudentRepository) : ViewModel() {
   companion object {
-    private const val PARTICIPANTS_KEY = "participants_key"
+//    private const val PARTICIPANTS_KEY = "participants_key"
     private const val TIMEOUT_MILLIS = 5_000L
   }
 
@@ -35,23 +35,25 @@ class WorkoutViewModel @Inject constructor(
         initialValue = StudentsUiState()
       )
 
-  init {
-    savedStateHandle.get<List<Student>>(PARTICIPANTS_KEY)?.let { participantsList ->
-      setParticipantsList(participantsList)
-    }
-  }
+//  init {
+//    savedStateHandle.get<List<Student>>(PARTICIPANTS_KEY)?.let { participantsList ->
+//      setParticipantsList(participantsList)
+//    }
+//  }
+//
+//  private fun setParticipantsList(participantsList: List<Student>) {
+//    // Save participantsList to SavedStateHandle
+//    savedStateHandle.set(PARTICIPANTS_KEY, participantsList)
+//
+//    // Update the UI state
+//    _uiState.update { currentState ->
+//      currentState.copy(participantsList = participantsList)
+//    }
+//  }
 
-  private fun setParticipantsList(participantsList: List<Student>) {
-    // Save participantsList to SavedStateHandle
-    savedStateHandle.set(PARTICIPANTS_KEY, participantsList)
-
-    // Update the UI state
-    _uiState.update { currentState ->
-      currentState.copy(participantsList = participantsList)
-    }
-  }
-
-  fun setParticipants(participant: Student) {
+  //TODO: Add ability to add and remove student from workout participant times map
+  // A better idea is to possibly implement a the participants times map rather than a list.
+    fun setParticipants(participant: Student) {
     _uiState.update { currentState ->
       val newParticipants = if (currentState.participantsList.contains(participant)) {
         currentState.participantsList.filter { it != participant }
@@ -60,7 +62,7 @@ class WorkoutViewModel @Inject constructor(
       }
       currentState.copy(participantsList = newParticipants)
     }
-    savedStateHandle[PARTICIPANTS_KEY] = _uiState.value.participantsList
+//    savedStateHandle[PARTICIPANTS_KEY] = _uiState.value.participantsList
   }
 
   fun setInterval(interval: String){
@@ -69,11 +71,31 @@ class WorkoutViewModel @Inject constructor(
       currentState.copy(interval = interval)
     }
   }
+
+  fun setParticipantTime(participant: String, timeStamp: Long){
+    _uiState.update {
+        currentState ->
+      val newMap = currentState.participantTimes.keys.associateWith {
+          key ->
+        currentState.participantTimes.getValue(key) + if (key == participant) {
+          listOf(timeStamp)
+        } else {
+          emptyList()
+        }
+      }
+      currentState.copy(participantTimes = newMap)
+    }
+  }
+
+  fun resetWorkout(){
+    _uiState.value = WorkoutUiState()
+  }
 }
 
 data class WorkoutUiState(
   val participantsList: List<Student> = listOf(),
-  val interval: String = ""
+  val interval: String = "",
+  val participantTimes: Map<String, List<Long>> = mapOf()
 )
 
 data class StudentsUiState(

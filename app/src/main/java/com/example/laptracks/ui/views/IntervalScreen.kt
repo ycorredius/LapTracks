@@ -61,7 +61,8 @@ object IntervalDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IntervalScreen(
-  viewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  navigateToParticipantSummary: () -> Unit,
+  viewModel: WorkoutViewModel
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()
@@ -79,7 +80,8 @@ fun IntervalScreen(
       participants = workoutUiState.participantsList,
       selectedInterval = workoutUiState.interval,
       setInterval = { viewModel.setInterval(it) },
-      modifier = Modifier.padding(innerPadding)
+      modifier = Modifier.padding(innerPadding),
+      navigateToParticipantSummary = navigateToParticipantSummary
     )
   }
 }
@@ -89,7 +91,8 @@ private fun IntervalBody(
   participants: List<Student>,
   selectedInterval: String,
   setInterval: (String) -> Unit,
-  modifier: Modifier = Modifier
+  modifier: Modifier = Modifier,
+  navigateToParticipantSummary: () -> Unit
 ) {
   val context = LocalContext.current
   val intervals = DataSource.intervals
@@ -168,7 +171,7 @@ private fun IntervalBody(
         .padding(18.dp)
     ) {
       Button(
-        onClick = { /*onNextButtonClick()*/ },
+        onClick = { navigateToParticipantSummary() },
         enabled = selectedText != context.getString(R.string.intervals),
         modifier = Modifier.fillMaxWidth()
       ) {
@@ -188,7 +191,8 @@ fun IntervalScreenPreview() {
     IntervalBody(
       participants = listOf(Student(firstName = "Bill", lastName = "smith", displayName = "BSmith")),
       selectedInterval = "800",
-      setInterval = {}
+      setInterval = {},
+      navigateToParticipantSummary = {}
     )
   }
 }

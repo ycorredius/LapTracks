@@ -33,6 +33,7 @@ import com.example.laptracks.R
 import com.example.laptracks.data.Student
 import com.example.laptracks.ui.AppViewModelProvider
 import com.example.laptracks.ui.navigation.NavigationDestination
+import com.example.laptracks.ui.viewmodels.WorkoutUiState
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 
 object ParticipantDestination : NavigationDestination {
@@ -45,12 +46,11 @@ object ParticipantDestination : NavigationDestination {
 fun ParticipantScreen(
   navigateToStudentEntry: () -> Unit,
   navigateToInterval: () -> Unit,
-  viewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  workoutViewModel: WorkoutViewModel
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-  val studentsUiState by viewModel.studentsUiState.collectAsState()
-  val workoutUiState by viewModel.workoutUiState.collectAsState()
-
+  val workoutUiState by workoutViewModel.workoutUiState.collectAsState()
+  val studentUiState by workoutViewModel.studentsUiState.collectAsState()
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
@@ -75,8 +75,8 @@ fun ParticipantScreen(
     ParticipantBody(
       modifier = Modifier.padding(innerPadding),
       participants = workoutUiState.participantsList,
-      students = studentsUiState.studentsList,
-      onCheckBoxChange = { viewModel.setParticipants(it) },
+      students = studentUiState.studentsList,
+      onCheckBoxChange = { workoutViewModel.setParticipants(it) },
       navigateToInterval = navigateToInterval
     )
 

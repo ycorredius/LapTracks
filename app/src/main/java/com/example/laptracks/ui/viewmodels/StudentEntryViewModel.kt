@@ -25,6 +25,7 @@ class StudentEntryViewModel(private val studentRepository: StudentRepository) : 
   suspend fun saveStudent(){
     if (validateStudent()) {
       studentRepository.insertStudent(studentUiState.studentDetails.toStudent())
+
     }
   }
 }
