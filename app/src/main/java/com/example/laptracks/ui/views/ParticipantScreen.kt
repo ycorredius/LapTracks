@@ -86,7 +86,7 @@ fun ParticipantScreen(
 @Composable
 private fun ParticipantBody(
   modifier: Modifier,
-  participants: List<Student>,
+  participants: Map<String,List<Long>>,
   students: List<Student>,
   navigateToInterval: () -> Unit,
   onCheckBoxChange: (Student) -> Unit = {}
@@ -126,7 +126,7 @@ private fun ParticipantBody(
 @Composable
 private fun ParticipantList(
   studentList: List<Student>,
-  participants: List<Student>,
+  participants: Map<String,List<Long>>,
   onCheckBoxChange: (Student) -> Unit
 ){
   Column {
@@ -135,7 +135,7 @@ private fun ParticipantList(
         verticalAlignment = Alignment.CenterVertically
       ) {
         Checkbox(
-          checked = participants.contains(student),
+          checked = participants.containsKey(student.displayName),
           onCheckedChange = {
             onCheckBoxChange(student)
           }
@@ -154,9 +154,7 @@ private fun ParticipantList(
 fun ParticipantScreenPreview() {
   ParticipantBody(
     modifier = Modifier,
-    participants = listOf(
-      Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
-    ),
+    participants = mapOf("BSmith" to listOf(1_000L, 2_000L)),
     students = listOf(
       Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
     ),

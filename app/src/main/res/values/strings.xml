@@ -2,6 +2,7 @@
     <string name="app_name">LapTracks</string>
     <string name="participants">Participants</string>
     <string name="intervals">Intervals</string>
+    <string name="select_intervals">Select Interval</string>
     <string name="cancel">Cancel</string>
     <string name="next">Next</string>
     <string name="distance">Distance</string>
@@ -17,4 +18,5 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="display_name">Display Name</string>
+    <string name="email_chooser_title">Choose Email Title</string>
 </resources>

@@ -62,23 +62,26 @@ object IntervalDestination : NavigationDestination {
 @Composable
 fun IntervalScreen(
   navigateToParticipantSummary: () -> Unit,
-  viewModel: WorkoutViewModel
+  viewModel: WorkoutViewModel,
+  navigateUp: () -> Unit
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()
+  val selectedInterval = workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
         title = stringResource(IntervalDestination.titleRes),
-        canNavigateBack = false,
-        scrollBehavior = scrollBehavior
+        canNavigateBack = true,
+        scrollBehavior = scrollBehavior,
+        navigateUp = navigateUp
       )
     }
   ) { innerPadding ->
 
     IntervalBody(
       participants = workoutUiState.participantsList,
-      selectedInterval = workoutUiState.interval,
+      selectedInterval = selectedInterval,
       setInterval = { viewModel.setInterval(it) },
       modifier = Modifier.padding(innerPadding),
       navigateToParticipantSummary = navigateToParticipantSummary
@@ -88,7 +91,7 @@ fun IntervalScreen(
 
 @Composable
 private fun IntervalBody(
-  participants: List<Student>,
+  participants: Map<String,List<Long>>,
   selectedInterval: String,
   setInterval: (String) -> Unit,
   modifier: Modifier = Modifier,
@@ -115,10 +118,9 @@ private fun IntervalBody(
         )
         Column {
           participants.forEach { participant ->
-            Text(text = participant.displayName, fontSize = 18.sp)
+            Text(text = participant.key, fontSize = 18.sp)
           }
         }
-
       }
       Column(
         modifier = Modifier
@@ -131,38 +133,14 @@ private fun IntervalBody(
             .width(dimensionResource(R.dimen.interval_divider))
             .padding(0.dp, 5.dp, 0.dp, 25.dp)
         )
-        Box {
-          OutlinedTextField(
-            value = selectedText,
-            label = { Text(text = "Select Interval", fontSize = 14.sp) },
-            onValueChange = { selectedText = it },
-            trailingIcon = {
-              val icon =
-                if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
-              Icon(icon, contentDescription = "Some Icon")
-            },
-            readOnly = true
-          )
-          Surface(
-            modifier = Modifier
-              .fillMaxWidth()
-              .fillMaxHeight()
-              .clip(MaterialTheme.shapes.extraSmall)
-              .clickable { expanded = true },
-            color = Color.Transparent,
-          ) {}
-        }
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-          intervals.forEach { interval ->
-            DropdownMenuItem(text = { Text(text = interval) },
-              onClick = {
-                selectedText = interval
-                expanded = !expanded
-                setInterval(interval)
-              }
-            )
-          }
-        }
+        IntervalDropdownMenu(
+          onChange = {selectedText = it},
+          selectedText = selectedText,
+          expanded = expanded,
+          onDropdownClick = {expanded = it},
+          intervals = intervals,
+          setInterval = {setInterval(it)}
+        )
       }
     }
     Column(
@@ -172,7 +150,7 @@ private fun IntervalBody(
     ) {
       Button(
         onClick = { navigateToParticipantSummary() },
-        enabled = selectedText != context.getString(R.string.intervals),
+        enabled = selectedText != context.getString(R.string.select_intervals),
         modifier = Modifier.fillMaxWidth()
       ) {
         Text(stringResource(R.string.next))
@@ -184,12 +162,55 @@ private fun IntervalBody(
   }
 }
 
+@Composable
+private fun IntervalDropdownMenu(
+  onChange: (String) ->Unit ,
+  selectedText: String,
+  expanded: Boolean,
+  onDropdownClick: (Boolean) -> Unit,
+  intervals: List<String>,
+  setInterval: (String) -> Unit
+){
+  Box {
+    OutlinedTextField(
+      value = selectedText,
+      label = { Text(text = stringResource(R.string.select_intervals), fontSize = 14.sp) },
+      onValueChange = { onChange(it) },
+      trailingIcon = {
+        val icon =
+          if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
+        Icon(icon, contentDescription = "Some Icon")
+      },
+      readOnly = true
+    )
+    Surface(
+      modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight()
+        .clip(MaterialTheme.shapes.extraSmall)
+        .clickable { onDropdownClick(!expanded) },
+      color = Color.Transparent,
+    ) {}
+  }
+  DropdownMenu(expanded = expanded, onDismissRequest = { onDropdownClick(!expanded) }) {
+    intervals.forEach { interval ->
+      DropdownMenuItem(text = { Text(text = interval) },
+        onClick = {
+          onChange(interval)
+          onDropdownClick(!expanded)
+          setInterval(interval)
+        }
+      )
+    }
+  }
+}
+
 @Preview
 @Composable
 fun IntervalScreenPreview() {
   LapTracksTheme {
     IntervalBody(
-      participants = listOf(Student(firstName = "Bill", lastName = "smith", displayName = "BSmith")),
+      participants = mapOf("BSmith" to listOf(1_000L, 2_000L)),
       selectedInterval = "800",
       setInterval = {},
       navigateToParticipantSummary = {}

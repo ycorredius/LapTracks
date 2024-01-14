@@ -55,10 +55,10 @@ class WorkoutViewModel @Inject constructor(
   // A better idea is to possibly implement a the participants times map rather than a list.
     fun setParticipants(participant: Student) {
     _uiState.update { currentState ->
-      val newParticipants = if (currentState.participantsList.contains(participant)) {
-        currentState.participantsList.filter { it != participant }
+      val newParticipants = if (currentState.participantsList.containsKey(participant.displayName)) {
+        currentState.participantsList.filter { it.key != participant.displayName }
       } else {
-        currentState.participantsList + listOf(participant)
+        currentState.participantsList + mapOf(participant.displayName to emptyList())
       }
       currentState.copy(participantsList = newParticipants)
     }
@@ -75,15 +75,15 @@ class WorkoutViewModel @Inject constructor(
   fun setParticipantTime(participant: String, timeStamp: Long){
     _uiState.update {
         currentState ->
-      val newMap = currentState.participantTimes.keys.associateWith {
+      val newMap = currentState.participantsList.keys.associateWith {
           key ->
-        currentState.participantTimes.getValue(key) + if (key == participant) {
+        currentState.participantsList.getValue(key) + if (key == participant) {
           listOf(timeStamp)
         } else {
           emptyList()
         }
       }
-      currentState.copy(participantTimes = newMap)
+      currentState.copy(participantsList = newMap)
     }
   }
 
@@ -93,9 +93,8 @@ class WorkoutViewModel @Inject constructor(
 }
 
 data class WorkoutUiState(
-  val participantsList: List<Student> = listOf(),
-  val interval: String = "",
-  val participantTimes: Map<String, List<Long>> = mapOf()
+  val participantsList:Map<String, List<Long>> = mapOf(),
+  val interval: String = ""
 )
 
 data class StudentsUiState(
