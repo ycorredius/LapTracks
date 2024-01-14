@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -36,10 +38,11 @@ fun AppNavHost(
     modifier = modifier
   ) {
     composable(route = ParticipantDestination.route) {
+      val workoutViewModel = hiltViewModel<WorkoutViewModel>()
       ParticipantScreen(
         navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
         navigateToInterval = { navController.navigate(IntervalDestination.route) },
-        workoutViewModel = viewModel
+        workoutViewModel = workoutViewModel
       )
     }
 
@@ -51,17 +54,25 @@ fun AppNavHost(
     }
 
     composable(route = IntervalDestination.route) {
+      val parentEntry = remember(it) {
+        navController.getBackStackEntry(ParticipantDestination.route)
+      }
+      val parentViewModel = hiltViewModel<WorkoutViewModel>(parentEntry)
       IntervalScreen(
         navigateToParticipantSummary = { navController.navigate(ParticipantSummaryDestination.route) },
-        viewModel,
         navigateUp = { navController.navigateUp() },
-        onCancelClick = { viewModel.onCancelClick(navController) }
+        onCancelClick = { viewModel.onCancelClick(navController) },
+        viewModel = parentViewModel
       )
     }
 
     composable(route = ParticipantSummaryDestination.route) {
+      val parentEntry = remember(it) {
+        navController.getBackStackEntry(ParticipantDestination.route)
+      }
+      val parentViewModel = hiltViewModel<WorkoutViewModel>(parentEntry)
       PracticeSummaryScreen(
-        workoutViewModel = viewModel,
+        workoutViewModel = parentViewModel,
         navigateUp = { navController.navigateUp() },
         onFinishClick = { navController.navigate(ResultScreenDestination.route) },
         onCancelClick = { viewModel.onCancelClick(navController) }
@@ -69,8 +80,12 @@ fun AppNavHost(
     }
     composable(route = ResultScreenDestination.route) {
       val context = LocalContext.current
+      val parentEntry = remember(it) {
+        navController.getBackStackEntry(ParticipantDestination.route)
+      }
+      val parentViewModel = hiltViewModel<WorkoutViewModel>(parentEntry)
       ResultScreen(
-        viewModel = viewModel,
+        viewModel = parentViewModel,
         navigateUp = { navController.navigateUp() },
         onCompleteClick = { subject: String, workout: String ->
           composeEmail(context, subject = subject, bodyText = workout)
@@ -86,25 +101,6 @@ private fun WorkoutViewModel.onCancelClick(
 ) {
   this.resetWorkout()
   navController.navigate(ParticipantDestination.route)
-}
-
-private fun shareWorkout(
-  context: Context,
-  subject: String,
-  workout: String
-) {
-  val intent = Intent(Intent.ACTION_SEND).apply {
-    type = "text/plain"
-    putExtra(Intent.EXTRA_SUBJECT, subject)
-    putExtra(Intent.EXTRA_TEXT, workout)
-  }
-
-  context.startActivity(
-    Intent.createChooser(
-      intent,
-      context.getString(R.string.new_workout)
-    )
-  )
 }
 
 private fun composeEmail(context: Context, subject: String, bodyText: String) {

@@ -1,6 +1,5 @@
 package com.example.laptracks.ui.viewmodels
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.laptracks.data.Student
@@ -17,10 +16,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-  private val savedStateHandle: SavedStateHandle,
-  private val studentRepository: StudentRepository) : ViewModel() {
+  studentRepository: StudentRepository
+) : ViewModel() {
   companion object {
-//    private const val PARTICIPANTS_KEY = "participants_key"
     private const val TIMEOUT_MILLIS = 5_000L
   }
 
@@ -35,48 +33,27 @@ class WorkoutViewModel @Inject constructor(
         initialValue = StudentsUiState()
       )
 
-//  init {
-//    savedStateHandle.get<List<Student>>(PARTICIPANTS_KEY)?.let { participantsList ->
-//      setParticipantsList(participantsList)
-//    }
-//  }
-//
-//  private fun setParticipantsList(participantsList: List<Student>) {
-//    // Save participantsList to SavedStateHandle
-//    savedStateHandle.set(PARTICIPANTS_KEY, participantsList)
-//
-//    // Update the UI state
-//    _uiState.update { currentState ->
-//      currentState.copy(participantsList = participantsList)
-//    }
-//  }
-
-  //TODO: Add ability to add and remove student from workout participant times map
-  // A better idea is to possibly implement a the participants times map rather than a list.
-    fun setParticipants(participant: Student) {
+  fun setParticipants(participant: Student) {
     _uiState.update { currentState ->
-      val newParticipants = if (currentState.participantsList.containsKey(participant.displayName)) {
-        currentState.participantsList.filter { it.key != participant.displayName }
-      } else {
-        currentState.participantsList + mapOf(participant.displayName to emptyList())
-      }
+      val newParticipants =
+        if (currentState.participantsList.containsKey(participant.displayName)) {
+          currentState.participantsList.filter { it.key != participant.displayName }
+        } else {
+          currentState.participantsList + mapOf(participant.displayName to emptyList())
+        }
       currentState.copy(participantsList = newParticipants)
     }
-//    savedStateHandle[PARTICIPANTS_KEY] = _uiState.value.participantsList
   }
 
-  fun setInterval(interval: String){
-    _uiState.update {
-      currentState ->
+  fun setInterval(interval: String) {
+    _uiState.update { currentState ->
       currentState.copy(interval = interval)
     }
   }
 
-  fun setParticipantTime(participant: String, timeStamp: Long){
-    _uiState.update {
-        currentState ->
-      val newMap = currentState.participantsList.keys.associateWith {
-          key ->
+  fun setParticipantTime(participant: String, timeStamp: Long) {
+    _uiState.update { currentState ->
+      val newMap = currentState.participantsList.keys.associateWith { key ->
         currentState.participantsList.getValue(key) + if (key == participant) {
           listOf(timeStamp)
         } else {
@@ -87,13 +64,13 @@ class WorkoutViewModel @Inject constructor(
     }
   }
 
-  fun resetWorkout(){
+  fun resetWorkout() {
     _uiState.value = WorkoutUiState()
   }
 }
 
 data class WorkoutUiState(
-  val participantsList:Map<String, List<Long>> = mapOf(),
+  val participantsList: Map<String, List<Long>> = mapOf(),
   val interval: String = ""
 )
 
