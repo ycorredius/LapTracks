@@ -64,7 +64,8 @@ fun IntervalScreen(
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()
-  val selectedInterval = workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
+  val selectedInterval =
+    workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
@@ -89,7 +90,7 @@ fun IntervalScreen(
 
 @Composable
 private fun IntervalBody(
-  participants: Map<String,List<Long>>,
+  participants: Map<String, List<Long>>,
   selectedInterval: String,
   setInterval: (String) -> Unit,
   modifier: Modifier = Modifier,
@@ -133,12 +134,12 @@ private fun IntervalBody(
             .padding(0.dp, 5.dp, 0.dp, 25.dp)
         )
         IntervalDropdownMenu(
-          onChange = {selectedText = it},
+          onChange = { selectedText = it },
           selectedText = selectedText,
           expanded = expanded,
-          onDropdownClick = {expanded = it},
+          onDropdownClick = { expanded = it },
           intervals = intervals,
-          setInterval = {setInterval(it)}
+          setInterval = { setInterval(it) }
         )
       }
     }
@@ -163,13 +164,13 @@ private fun IntervalBody(
 
 @Composable
 private fun IntervalDropdownMenu(
-  onChange: (String) ->Unit ,
+  onChange: (String) -> Unit,
   selectedText: String,
   expanded: Boolean,
   onDropdownClick: (Boolean) -> Unit,
   intervals: List<String>,
   setInterval: (String) -> Unit
-){
+) {
   Box {
     OutlinedTextField(
       value = selectedText,
