@@ -55,7 +55,8 @@ fun PracticeSummaryBody(
   isTimerRunning: Boolean,
   onStartClick: () -> Unit,
   modifier: Modifier = Modifier,
-  onFinishClick: () -> Unit
+  onFinishClick: () -> Unit,
+  onCancelClick: () -> Unit
 ) {
   Column(
     modifier = Modifier
@@ -94,7 +95,7 @@ fun PracticeSummaryBody(
         Column(
           modifier = Modifier.fillMaxWidth(),
         ) {
-          OutlinedButton(onClick = { /*onCancelButtonClick()*/ }, modifier = modifier.fillMaxWidth()) {
+          OutlinedButton(onClick = { onCancelClick() }, modifier = modifier.fillMaxWidth()) {
             Text(text = "Cancel")
           }
           Button(onClick = {
@@ -117,7 +118,7 @@ fun PracticeSummaryBody(
 @Composable
 fun PracticeSummaryScreen(
   workoutViewModel: WorkoutViewModel,
-  onCancelButtonClick: () -> Unit,
+  onCancelClick: () -> Unit,
   navigateUp: () -> Unit,
   onFinishClick: () -> Unit
 ) {
@@ -163,7 +164,8 @@ fun PracticeSummaryScreen(
         isEnabled = !isEnabled
       },
       modifier = Modifier.padding(innerPadding),
-      onFinishClick = onFinishClick
+      onFinishClick = onFinishClick,
+      onCancelClick = onCancelClick
     )
   }
 }
@@ -230,7 +232,8 @@ fun PracticeSummaryScreenPreview() {
       participants = mapOf("Billy" to listOf(5_000L)),
       setParticipantTime = {_,_ ->},
       totalTime = 5_000L,
-      onFinishClick = {}
+      onFinishClick = {},
+      onCancelClick = {}
     )
   }
 }

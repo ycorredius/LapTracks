@@ -42,13 +42,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.data.DataSource
-import com.example.laptracks.data.Student
-import com.example.laptracks.ui.AppViewModelProvider
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.theme.LapTracksTheme
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
@@ -63,7 +59,8 @@ object IntervalDestination : NavigationDestination {
 fun IntervalScreen(
   navigateToParticipantSummary: () -> Unit,
   viewModel: WorkoutViewModel,
-  navigateUp: () -> Unit
+  navigateUp: () -> Unit,
+  onCancelClick: () -> Unit
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()
@@ -84,7 +81,8 @@ fun IntervalScreen(
       selectedInterval = selectedInterval,
       setInterval = { viewModel.setInterval(it) },
       modifier = Modifier.padding(innerPadding),
-      navigateToParticipantSummary = navigateToParticipantSummary
+      navigateToParticipantSummary = navigateToParticipantSummary,
+      onCancelClick
     )
   }
 }
@@ -95,7 +93,8 @@ private fun IntervalBody(
   selectedInterval: String,
   setInterval: (String) -> Unit,
   modifier: Modifier = Modifier,
-  navigateToParticipantSummary: () -> Unit
+  navigateToParticipantSummary: () -> Unit,
+  onCancelClick: () -> Unit
 ) {
   val context = LocalContext.current
   val intervals = DataSource.intervals
@@ -155,7 +154,7 @@ private fun IntervalBody(
       ) {
         Text(stringResource(R.string.next))
       }
-      OutlinedButton(onClick = { /*onCancelButtonClick()*/ }, modifier = Modifier.fillMaxWidth()) {
+      OutlinedButton(onClick = { onCancelClick() }, modifier = Modifier.fillMaxWidth()) {
         Text(stringResource(R.string.cancel))
       }
     }
@@ -213,7 +212,8 @@ fun IntervalScreenPreview() {
       participants = mapOf("BSmith" to listOf(1_000L, 2_000L)),
       selectedInterval = "800",
       setInterval = {},
-      navigateToParticipantSummary = {}
+      navigateToParticipantSummary = {},
+      onCancelClick = {}
     )
   }
 }

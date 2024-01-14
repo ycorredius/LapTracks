@@ -23,73 +23,76 @@ import com.example.laptracks.ui.views.ParticipantSummaryDestination
 import com.example.laptracks.ui.views.PracticeSummaryScreen
 import com.example.laptracks.ui.views.StudentEntryDestination
 import com.example.laptracks.ui.views.StudentEntryScreen
-import javax.security.auth.Subject
 
 @Composable
 fun AppNavHost(
   navController: NavHostController,
   modifier: Modifier = Modifier,
   viewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
-){
-
+) {
   NavHost(
     navController = navController,
     startDestination = ParticipantDestination.route,
     modifier = modifier
-  ){
-    composable(route = ParticipantDestination.route){
+  ) {
+    composable(route = ParticipantDestination.route) {
       ParticipantScreen(
-        navigateToStudentEntry = {navController.navigate(StudentEntryDestination.route)},
-        navigateToInterval = {navController.navigate(IntervalDestination.route)},
+        navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
+        navigateToInterval = { navController.navigate(IntervalDestination.route) },
         workoutViewModel = viewModel
       )
     }
 
-    composable(route = StudentEntryDestination.route){
+    composable(route = StudentEntryDestination.route) {
       StudentEntryScreen(
         navigateUp = { navController.navigateUp() },
         navigateBack = { navController.popBackStack() },
       )
     }
 
-    composable(route = IntervalDestination.route){
+    composable(route = IntervalDestination.route) {
       IntervalScreen(
-        navigateToParticipantSummary = {navController.navigate(ParticipantSummaryDestination.route)},
+        navigateToParticipantSummary = { navController.navigate(ParticipantSummaryDestination.route) },
         viewModel,
-        navigateUp = {navController.navigateUp()}
+        navigateUp = { navController.navigateUp() },
+        onCancelClick = { viewModel.onCancelClick(navController) }
       )
     }
 
-    composable(route = ParticipantSummaryDestination.route){
+    composable(route = ParticipantSummaryDestination.route) {
       PracticeSummaryScreen(
         workoutViewModel = viewModel,
-        onCancelButtonClick = { viewModel.resetWorkout() },
-        navigateUp = {navController.navigateUp()},
-        onFinishClick = { navController.navigate(ResultScreenDestination.route)}
+        navigateUp = { navController.navigateUp() },
+        onFinishClick = { navController.navigate(ResultScreenDestination.route) },
+        onCancelClick = { viewModel.onCancelClick(navController) }
       )
     }
-    composable(route = ResultScreenDestination.route){
+    composable(route = ResultScreenDestination.route) {
       val context = LocalContext.current
       ResultScreen(
         viewModel = viewModel,
-        navigateUp = {navController.navigateUp()}
-      ) { subject: String, workout: String ->
-        composeEmail(context, subject = subject, bodyText = workout)
-      }
+        navigateUp = { navController.navigateUp() },
+        onCompleteClick = { subject: String, workout: String ->
+          composeEmail(context, subject = subject, bodyText = workout)
+        },
+        onResetClick = { viewModel.onCancelClick(navController) }
+      )
     }
   }
 }
 
-private fun WorkoutViewModel.onResetClick(
+private fun WorkoutViewModel.onCancelClick(
   navController: NavHostController
-){
+) {
   this.resetWorkout()
   navController.navigate(ParticipantDestination.route)
 }
 
-private fun shareWorkout(context: Context,
-                         subject: String,
-                         workout: String){
+private fun shareWorkout(
+  context: Context,
+  subject: String,
+  workout: String
+) {
   val intent = Intent(Intent.ACTION_SEND).apply {
     type = "text/plain"
     putExtra(Intent.EXTRA_SUBJECT, subject)
