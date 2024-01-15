@@ -1,11 +1,14 @@
 package com.example.laptracks.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
@@ -23,6 +26,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -59,25 +64,15 @@ fun ParticipantScreen(
         scrollBehavior = scrollBehavior
       )
     },
-    floatingActionButton = {
-      FloatingActionButton(
-        onClick = { navigateToStudentEntry() },
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.padding(16.dp)
-        ) {
-        Icon(
-          imageVector = Icons.Default.Add,
-          contentDescription = "Add button"
-        )
-      }
-    }) { innerPadding ->
+    ) { innerPadding ->
 
     ParticipantBody(
       modifier = Modifier.padding(innerPadding),
       participants = workoutUiState.participantsList,
       students = studentUiState.studentsList,
       onCheckBoxChange = { workoutViewModel.setParticipants(it) },
-      navigateToInterval = navigateToInterval
+      navigateToInterval = navigateToInterval,
+      navigateToStudentEntry = navigateToStudentEntry
     )
 
   }
@@ -89,7 +84,8 @@ private fun ParticipantBody(
   participants: Map<String,List<Long>>,
   students: List<Student>,
   navigateToInterval: () -> Unit,
-  onCheckBoxChange: (Student) -> Unit = {}
+  onCheckBoxChange: (Student) -> Unit = {},
+  navigateToStudentEntry: () -> Unit
 ) {
   Column(
     modifier = modifier
@@ -97,7 +93,13 @@ private fun ParticipantBody(
     verticalArrangement = Arrangement.SpaceBetween
   ) {
     if (students.isEmpty()){
-      Text(text = "The are no student currently!")
+      Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(text = "Currently no students saved!",
+          modifier = Modifier,
+          textAlign = TextAlign.Center,
+          fontSize = 24.sp,
+          fontWeight = FontWeight.Bold)
+      }
     }else {
       ParticipantList(
         studentList = students,
@@ -105,13 +107,23 @@ private fun ParticipantBody(
         onCheckBoxChange = { onCheckBoxChange(it) }
       )
     }
-    Row(
-      horizontalArrangement = Arrangement.SpaceAround,
-      verticalAlignment = Alignment.Bottom,
+    Column(
       modifier = Modifier
         .fillMaxWidth()
         .padding(18.dp)
     ) {
+      FloatingActionButton(
+        onClick = { navigateToStudentEntry() },
+        shape = CircleShape,
+        modifier = Modifier
+          .padding(16.dp)
+          .align(alignment = Alignment.End)
+      ) {
+        Icon(
+          imageVector = Icons.Default.Add,
+          contentDescription = "Add button"
+        )
+      }
       Button(
         onClick = { navigateToInterval() },
         enabled = participants.isNotEmpty(),
@@ -159,6 +171,20 @@ fun ParticipantScreenPreview() {
       Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
     ),
     onCheckBoxChange = { /* nothing */},
-    navigateToInterval = { /* nothing */}
+    navigateToInterval = { /* nothing */},
+    navigateToStudentEntry = {}
+  )
+}
+
+@Preview
+@Composable
+fun ParticipantEmptyScreenPreview(){
+  ParticipantBody(
+    modifier = Modifier,
+    participants = emptyMap(),
+    students = emptyList(),
+    onCheckBoxChange = { /* nothing */},
+    navigateToInterval = { /* nothing */},
+    navigateToStudentEntry = {}
   )
 }
