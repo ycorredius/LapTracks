@@ -25,7 +25,6 @@ class StudentEntryViewModel(private val studentRepository: StudentRepository) : 
   suspend fun saveStudent(){
     if (validateStudent()) {
       studentRepository.insertStudent(studentUiState.studentDetails.toStudent())
-
     }
   }
 }
@@ -38,10 +37,23 @@ data class StudentDetails(
   val id: Int = 0,
   val firstName: String = "",
   val lastName: String = "",
-  val displayName: String = ""
+  val displayName: String = "",
 )
 
 fun StudentDetails.toStudent(): Student = Student(
+  id = id,
+  firstName = firstName,
+  lastName = lastName,
+  displayName = displayName
+)
+
+//TODO: This will be implemented and used soon.
+//fun Student.toStudentUiState(isStudentValid: Boolean = false): StudentUiState = StudentUiState(
+//  studentDetails = this.toStudentDetails(),
+//  isStudentValid =  isStudentValid
+//)
+
+fun Student.toStudentDetails(): StudentDetails = StudentDetails(
   id = id,
   firstName = firstName,
   lastName = lastName,

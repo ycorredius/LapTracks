@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.convertLongToString
+import com.example.laptracks.data.Student
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.theme.LapTracksTheme
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
@@ -48,8 +49,8 @@ object ParticipantSummaryDestination : NavigationDestination {
 fun PracticeSummaryBody(
   currentDate: String,
   interval: String,
-  participants: Map<String, List<Long>>,
-  setParticipantTime: (String, Long) -> Unit,
+  participants: Map<Student, List<Long>>,
+  setParticipantTime: (Student, Long) -> Unit,
   totalTime: Long,
   isEnabled: Boolean,
   isTimerRunning: Boolean,
@@ -172,8 +173,8 @@ fun PracticeSummaryScreen(
 
 @Composable
 private fun ParticipantSummaryLazyColumn(
-  participants: Map<String, List<Long>>,
-  setParticipantTime: (String, Long) -> Unit,
+  participants: Map<Student, List<Long>>,
+  setParticipantTime: (Student, Long) -> Unit,
   totalTime: Long,
   isEnabled: Boolean
 ) {
@@ -190,7 +191,7 @@ private fun ParticipantSummaryLazyColumn(
           onClick = { setParticipantTime(participant.key, totalTime) },
           enabled = isEnabled
         ) {
-          Text(participant.key, fontSize = 18.sp)
+          Text(participant.key.displayName, fontSize = 18.sp)
         }
         LazyRow {
           participant.value.forEachIndexed { index, time ->
@@ -229,7 +230,7 @@ fun PracticeSummaryScreenPreview() {
       isTimerRunning = false,
       isEnabled = false,
       onStartClick = {},
-      participants = mapOf("Billy" to listOf(5_000L)),
+      participants = mapOf(Student(id = 0, firstName = "Billy", lastName = "Smith", displayName = "BSmith") to listOf(5_000L)),
       setParticipantTime = {_,_ ->},
       totalTime = 5_000L,
       onFinishClick = {},

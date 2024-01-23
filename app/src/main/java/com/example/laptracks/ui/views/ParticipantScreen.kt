@@ -1,13 +1,11 @@
 package com.example.laptracks.ui.views
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -16,7 +14,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -31,14 +28,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.data.Student
 import com.example.laptracks.ui.AppViewModelProvider
 import com.example.laptracks.ui.navigation.NavigationDestination
-import com.example.laptracks.ui.viewmodels.WorkoutUiState
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 
 object ParticipantDestination : NavigationDestination {
@@ -51,7 +46,7 @@ object ParticipantDestination : NavigationDestination {
 fun ParticipantScreen(
   navigateToStudentEntry: () -> Unit,
   navigateToInterval: () -> Unit,
-  workoutViewModel: WorkoutViewModel
+  workoutViewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by workoutViewModel.workoutUiState.collectAsState()
@@ -81,7 +76,7 @@ fun ParticipantScreen(
 @Composable
 private fun ParticipantBody(
   modifier: Modifier,
-  participants: Map<String,List<Long>>,
+  participants: Map<Student,List<Long>>,
   students: List<Student>,
   navigateToInterval: () -> Unit,
   onCheckBoxChange: (Student) -> Unit = {},
@@ -138,7 +133,7 @@ private fun ParticipantBody(
 @Composable
 private fun ParticipantList(
   studentList: List<Student>,
-  participants: Map<String,List<Long>>,
+  participants: Map<Student,List<Long>>,
   onCheckBoxChange: (Student) -> Unit
 ){
   Column {
@@ -147,7 +142,7 @@ private fun ParticipantList(
         verticalAlignment = Alignment.CenterVertically
       ) {
         Checkbox(
-          checked = participants.containsKey(student.displayName),
+          checked = participants.containsKey(student),
           onCheckedChange = {
             onCheckBoxChange(student)
           }
@@ -166,7 +161,7 @@ private fun ParticipantList(
 fun ParticipantScreenPreview() {
   ParticipantBody(
     modifier = Modifier,
-    participants = mapOf("BSmith" to listOf(1_000L, 2_000L)),
+    participants = mapOf(Student(id = 0, firstName = "Billy", lastName = "Smith", displayName = "BSmith") to listOf(1_000L, 2_000L)),
     students = listOf(
       Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
     ),

@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.convertLongToString
+import com.example.laptracks.data.Student
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 import java.text.SimpleDateFormat
@@ -40,17 +41,17 @@ object ResultScreenDestination : NavigationDestination {
 fun ResultScreen(
   viewModel: WorkoutViewModel,
   navigateUp: () -> Unit,
-  onCompleteClick: (String, String) -> Unit,
+  onSendEmailClick: (String,String) -> Unit,
   onResetClick: () -> Unit
 ) {
 
   val workoutUiState by viewModel.workoutUiState.collectAsState()
-  val date = SimpleDateFormat("dd-MM-yyy")
+  val date = SimpleDateFormat("dd-MM-yyyy")
   val currentDate = date.format(Date())
   var workout = ""
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   workoutUiState.participantsList.forEach { participant ->
-    val result = "${participant.key} - " + participant.value.map{ convertLongToString(it)}.joinToString(", ") + "\n"
+    val result = "${participant.key.displayName} - " + participant.value.map{ convertLongToString(it)}.joinToString(", ") + "\n"
     workout += result
   }
   Scaffold(
@@ -67,22 +68,24 @@ fun ResultScreen(
       participants = workoutUiState.participantsList,
       currentDate = currentDate.toString(),
       workout,
-      onCompleteClick = { currentDate, workout ->
-        onCompleteClick(currentDate,workout)
+      onSendEmailClick = { currentDate, workout ->
+        onSendEmailClick(currentDate,workout)
       },
       modifier = Modifier.padding(innerPadding),
-      onResetClick = onResetClick
+      onResetClick = onResetClick,
+      onSaveClick = { viewModel.saveWorkout() }
     )
   }
 }
 
 @Composable
 private fun ResultBody(
-  participants: Map<String, List<Long>>,
+  participants: Map<Student, List<Long>>,
   currentDate: String,
   workout: String,
-  onCompleteClick: (String,String) -> Unit,
+  onSendEmailClick: (String,String) -> Unit,
   onResetClick: () -> Unit,
+  onSaveClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Column(
@@ -97,7 +100,7 @@ private fun ResultBody(
             .padding(5.dp)
             .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
-          Text(text = participant.key, modifier = Modifier.weight(0.2f), fontSize = 20.sp)
+          Text(text = participant.key.displayName, modifier = Modifier.weight(0.2f), fontSize = 20.sp)
           Spacer(modifier = Modifier)
           LazyRow(modifier = Modifier.weight(0.5f)) {
             participants.forEach { participant ->
@@ -114,11 +117,15 @@ private fun ResultBody(
       }
     }
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+      Button(onClick = {
+        onSaveClick() }, modifier = Modifier.fillMaxWidth()) {
+        Text(stringResource(R.string.save))
+      }
       Button(
-        onClick = { onCompleteClick(currentDate, workout) },
+        onClick = { onSendEmailClick(currentDate, workout) },
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.complete))
+        Text(stringResource(R.string.send_email))
       }
       Button(
         onClick = { onResetClick() },
@@ -134,10 +141,11 @@ private fun ResultBody(
 @Composable
 fun ResultScreenPreview() {
   ResultBody(
-    participants = mapOf("Bill" to listOf(5_000L)),
-    onCompleteClick = { _, _ ->},
+    participants = mapOf(Student(id = 0, firstName = "Bily", lastName = "Smith", displayName = "BSmith") to listOf(5_000L)),
+    onSendEmailClick = { _, _ ->},
     currentDate = "1234",
     workout = "Testing",
-    onResetClick = {}
+    onResetClick = {},
+    onSaveClick = {}
   )
 }
