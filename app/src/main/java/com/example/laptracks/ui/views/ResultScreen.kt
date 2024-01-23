@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.convertLongToString
 import com.example.laptracks.data.Student
+import com.example.laptracks.formatResults
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 import java.text.SimpleDateFormat
@@ -48,12 +50,9 @@ fun ResultScreen(
   val workoutUiState by viewModel.workoutUiState.collectAsState()
   val date = SimpleDateFormat("dd-MM-yyyy")
   val currentDate = date.format(Date())
-  var workout = ""
+  val workout = formatResults(workoutUiState.participantsList)
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-  workoutUiState.participantsList.forEach { participant ->
-    val result = "${participant.key.displayName} - " + participant.value.map{ convertLongToString(it)}.joinToString(", ") + "\n"
-    workout += result
-  }
+
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
@@ -119,19 +118,19 @@ private fun ResultBody(
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
       Button(onClick = {
         onSaveClick() }, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.save))
+        Text(stringResource(R.string.save), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
       Button(
         onClick = { onSendEmailClick(currentDate, workout) },
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.send_email))
+        Text(stringResource(R.string.send_email), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
       Button(
         onClick = { onResetClick() },
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.reset))
+        Text(stringResource(R.string.reset), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
     }
   }

@@ -65,8 +65,7 @@ fun IntervalScreen(
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()
-  val selectedInterval =
-    workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
+  val selectedInterval = workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
@@ -154,10 +153,10 @@ private fun IntervalBody(
         enabled = selectedText != context.getString(R.string.select_intervals),
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.next))
+        Text(stringResource(R.string.next), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
       OutlinedButton(onClick = { onCancelClick() }, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.cancel))
+        Text(stringResource(R.string.cancel), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
     }
   }

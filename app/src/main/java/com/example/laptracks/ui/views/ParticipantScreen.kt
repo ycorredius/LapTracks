@@ -6,14 +6,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -22,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,7 +42,6 @@ object ParticipantDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ParticipantScreen(
-  navigateToStudentEntry: () -> Unit,
   navigateToInterval: () -> Unit,
   workoutViewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
@@ -67,7 +64,6 @@ fun ParticipantScreen(
       students = studentUiState.studentsList,
       onCheckBoxChange = { workoutViewModel.setParticipants(it) },
       navigateToInterval = navigateToInterval,
-      navigateToStudentEntry = navigateToStudentEntry
     )
 
   }
@@ -79,8 +75,7 @@ private fun ParticipantBody(
   participants: Map<Student,List<Long>>,
   students: List<Student>,
   navigateToInterval: () -> Unit,
-  onCheckBoxChange: (Student) -> Unit = {},
-  navigateToStudentEntry: () -> Unit
+  onCheckBoxChange: (Student) -> Unit = {}
 ) {
   Column(
     modifier = modifier
@@ -90,7 +85,6 @@ private fun ParticipantBody(
     if (students.isEmpty()){
       Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Currently no students saved!",
-          modifier = Modifier,
           textAlign = TextAlign.Center,
           fontSize = 24.sp,
           fontWeight = FontWeight.Bold)
@@ -107,24 +101,12 @@ private fun ParticipantBody(
         .fillMaxWidth()
         .padding(18.dp)
     ) {
-      FloatingActionButton(
-        onClick = { navigateToStudentEntry() },
-        shape = CircleShape,
-        modifier = Modifier
-          .padding(16.dp)
-          .align(alignment = Alignment.End)
-      ) {
-        Icon(
-          imageVector = Icons.Default.Add,
-          contentDescription = "Add button"
-        )
-      }
       Button(
         onClick = { navigateToInterval() },
         enabled = participants.isNotEmpty(),
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.next), fontSize = 18.sp)
+        Text(stringResource(R.string.next), fontSize = dimensionResource(R.dimen.button_font).value.sp)
       }
     }
   }
@@ -136,8 +118,9 @@ private fun ParticipantList(
   participants: Map<Student,List<Long>>,
   onCheckBoxChange: (Student) -> Unit
 ){
-  Column {
-    studentList.forEach { student ->
+  LazyColumn {
+    items(studentList){
+      student ->
       Row(
         verticalAlignment = Alignment.CenterVertically
       ) {
@@ -167,7 +150,6 @@ fun ParticipantScreenPreview() {
     ),
     onCheckBoxChange = { /* nothing */},
     navigateToInterval = { /* nothing */},
-    navigateToStudentEntry = {}
   )
 }
 
@@ -179,7 +161,6 @@ fun ParticipantEmptyScreenPreview(){
     participants = emptyMap(),
     students = emptyList(),
     onCheckBoxChange = { /* nothing */},
-    navigateToInterval = { /* nothing */},
-    navigateToStudentEntry = {}
+    navigateToInterval = { /* nothing */}
   )
 }

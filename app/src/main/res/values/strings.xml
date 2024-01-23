@@ -23,4 +23,6 @@
     <string name="student_list">Student List</string>
     <string name="student_details">Student Details</string>
     <string name="send_email">Send Email</string>
+    <string name="finish">Finish</string>
+    <string name="start">Start</string>
 </resources>

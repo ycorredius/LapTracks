@@ -53,7 +53,7 @@ fun AppNavHost(
     ) {
       composable(route = ParticipantDestination.route) {
         ParticipantScreen(
-          navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
+
           navigateToInterval = { navController.navigate(IntervalDestination.route) },
         )
       }
@@ -111,7 +111,8 @@ fun AppNavHost(
           navigateUp = { navController.navigateUp() },
           navigateToStudentDetails = {
             navController.navigate("${StudentDetailsDestination.route}/${it}")
-          }
+          },
+          navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
         )
       }
 
@@ -121,9 +122,7 @@ fun AppNavHost(
           type = NavType.IntType
         })
       ) {
-        StudentDetailsScreen(
-
-        )
+        StudentDetailsScreen( navigateUp = {navController.navigateUp()} )
       }
 
     }

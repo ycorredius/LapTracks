@@ -38,13 +38,14 @@ data class StudentDetails(
   val firstName: String = "",
   val lastName: String = "",
   val displayName: String = "",
+  val workouts: Int = 0
 )
 
 fun StudentDetails.toStudent(): Student = Student(
   id = id,
   firstName = firstName,
   lastName = lastName,
-  displayName = displayName
+  displayName = displayName,
 )
 
 //TODO: This will be implemented and used soon.

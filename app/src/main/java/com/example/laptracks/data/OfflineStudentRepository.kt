@@ -6,6 +6,8 @@ import javax.inject.Inject
 class OfflineStudentRepository @Inject constructor(private val studentDao: StudentDao): StudentRepository {
   override fun getStudentsStream(): Flow<List<Student>> = studentDao.getAllStudents()
 
+  override fun getStudentsWithWorkoutsStream(): Flow<Map<Student, List<Workout>>> = studentDao.getAllStudentsWithWorkouts()
+
   override fun getStudent(id: Int): Flow<Student?> = studentDao.getStudent(id)
   override fun loadStudentWithWorkouts(id: Int): Flow<Map<Student, List<Workout>?>> = studentDao.loadStudentAndWorkouts(id)
 

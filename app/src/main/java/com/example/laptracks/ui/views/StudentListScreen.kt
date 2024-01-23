@@ -1,12 +1,16 @@
 package com.example.laptracks.ui.views
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,9 +29,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.data.Student
+import com.example.laptracks.data.Workout
 import com.example.laptracks.ui.AppViewModelProvider
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.viewmodels.StudentListViewModel
+import com.example.laptracks.ui.viewmodels.StudentUiModel
 
 object StudentListDestination : NavigationDestination {
   override val route = "studentList"
@@ -39,14 +45,15 @@ object StudentListDestination : NavigationDestination {
 fun StudentListScreen(
   viewModel: StudentListViewModel = viewModel(factory = AppViewModelProvider.Factory),
   navigateToStudentDetails: (Int) -> Unit,
-  navigateUp: () -> Unit
+  navigateUp: () -> Unit,
+  navigateToStudentEntry: () -> Unit
 ) {
   val studentListUiState by viewModel.studentListUiState.collectAsState()
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
-        title = stringResource(ParticipantDestination.titleRes),
+        title = stringResource(StudentListDestination.titleRes),
         canNavigateBack = true,
         scrollBehavior = scrollBehavior,
         navigateUp = navigateUp
@@ -56,24 +63,40 @@ fun StudentListScreen(
     StudentListBody(
       students = studentListUiState.studentList,
       modifier = Modifier.padding(innerPadding),
-      navigateToStudentDetails
+      navigateToStudentDetails,
+      navigateToStudentEntry
     )
+
+
   }
 }
 
 @Composable
 fun StudentListBody(
-  students: List<Student>,
+  students: List<StudentUiModel>,
   modifier: Modifier = Modifier,
-  navigateToStudentDetails: (Int) -> Unit
+  navigateToStudentDetails: (Int) -> Unit,
+  navigateToStudentEntry: () -> Unit
 ) {
-  LazyColumn(modifier) {
-    items(students) { student ->
-      StudentListItem(
-        student,
-        modifier = Modifier
-          .padding(8.dp)
-          .clickable {navigateToStudentDetails(student.id) })
+  Column(modifier = Modifier.fillMaxSize().padding(10.dp)) {
+    if (students.isNotEmpty()) {
+      LazyColumn(modifier) {
+        items(students) { student ->
+          StudentListItem(
+            student,
+            modifier = Modifier
+              .padding(8.dp)
+              .clickable { navigateToStudentDetails(student.student.id) }
+          )
+        }
+      }
+    } else {
+      Text(text = "No Students available")
+    }
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+      Button(onClick = { navigateToStudentEntry() }) {
+        Text(text = "Add Student")
+      }
     }
   }
 }
@@ -81,7 +104,7 @@ fun StudentListBody(
 
 @Composable
 fun StudentListItem(
-  student: Student,
+  student: StudentUiModel,
   modifier: Modifier = Modifier
 ) {
   Card(
@@ -94,12 +117,12 @@ fun StudentListItem(
         .fillMaxWidth()
     ) {
       Text(
-        text = " ${student.firstName} ${student.lastName}",
+        text = " ${student.student.firstName} ${student.student.lastName}",
         style = MaterialTheme.typography.titleLarge
       )
       Spacer(modifier = Modifier.weight(1f))
       Text(
-        text = "# Workouts",
+        text = "${student.workouts.size} Workouts",
         style = MaterialTheme.typography.titleMedium
       )
     }
@@ -110,9 +133,20 @@ fun StudentListItem(
 @Preview
 fun StudentListBodyPreview() {
   StudentListBody(
-    students = listOf(
-      Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
-    ),
-    navigateToStudentDetails = {}
+    students = listOf(StudentUiModel(student = Student(0,"bily","smith","bsmith"), workouts = listOf(
+      Workout(0, "somedate", emptyList(),"400",0)
+    ))),
+    navigateToStudentDetails = {},
+    navigateToStudentEntry = {}
+  )
+}
+
+@Composable
+@Preview
+fun EmptyStudentListBodyPreview() {
+  StudentListBody(
+    students = listOf(),
+    navigateToStudentDetails = {},
+    navigateToStudentEntry = {}
   )
 }

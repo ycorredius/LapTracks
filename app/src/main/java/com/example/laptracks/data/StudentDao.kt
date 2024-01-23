@@ -25,6 +25,9 @@ interface StudentDao{
   @Query("SELECT * from students")
   fun getAllStudents(): Flow<List<Student>>
 
+  @Query("SELECT * from students LEFT JOIN workouts ON students.id = workouts.studentId")
+  fun getAllStudentsWithWorkouts(): Flow<Map<Student,List<Workout>>>
+
   @Query("Select * FROM students LEFT JOIN workouts ON students.id = workouts.studentId WHERE students.id = :id")
   fun loadStudentAndWorkouts(id: Int): Flow<Map<Student,List<Workout>?>>
 }

@@ -1,5 +1,6 @@
 package com.example.laptracks.ui.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,9 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +36,7 @@ import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.convertLongToString
 import com.example.laptracks.data.Student
+import com.example.laptracks.getLapTime
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.theme.LapTracksTheme
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
@@ -97,17 +101,18 @@ fun PracticeSummaryBody(
           modifier = Modifier.fillMaxWidth(),
         ) {
           OutlinedButton(onClick = { onCancelClick() }, modifier = modifier.fillMaxWidth()) {
-            Text(text = "Cancel")
+            Text(text = stringResource(id = R.string.cancel), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
           }
           Button(onClick = {
             onStartClick()
           },
             modifier = Modifier.fillMaxWidth()
           ) {
-            if (isTimerRunning) Text(text = "Pause") else Text(text = "Start")
+              if (isTimerRunning) Text(text = "Pause") else Text(text = stringResource(id = R.string.start),
+                fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
           }
           Button(onClick = { onFinishClick() }, enabled = !isEnabled, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Finish")
+            Text(text = stringResource(id = R.string.finish), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
           }
         }
       }
@@ -148,7 +153,7 @@ fun PracticeSummaryScreen(
         navigateUp = navigateUp
       )
     },
-    modifier = Modifier.padding(16.dp)
+    modifier = Modifier.padding(30.dp, 0.dp)
   ) { innerPadding ->
     PracticeSummaryBody(
       currentDate = currentDate,
@@ -179,45 +184,29 @@ private fun ParticipantSummaryLazyColumn(
   isEnabled: Boolean
 ) {
   Column(
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
+    verticalArrangement = Arrangement.spacedBy(5.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    modifier = Modifier.padding(5.dp)
   ) {
     participants.forEach { participant ->
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(0.dp, 10.dp)
-      ) {
-        Button(
-          onClick = { setParticipantTime(participant.key, totalTime) },
-          enabled = isEnabled
+      Card(modifier = Modifier.clickable {
+        if (isEnabled) setParticipantTime(participant.key, totalTime) }) {
+        Row(
+          horizontalArrangement = Arrangement.SpaceAround,
+          modifier = Modifier.padding(0.dp, 10.dp).fillMaxWidth()
         ) {
-          Text(participant.key.displayName, fontSize = 18.sp)
-        }
-        LazyRow {
-          participant.value.forEachIndexed { index, time ->
-            item {
-              IntervalLazyColumnItem(index = index, time = time)
-            }
+          Text(text = participant.key.displayName, style = MaterialTheme.typography.titleLarge)
+          Column {
+           Text(text = "Total laps")
+           Text(text = "${participant.value.size}")
+          }
+          Column {
+            Text(text = "Last Lap Time")
+            Text(text = getLapTime(participant.value))
           }
         }
       }
     }
-  }
-}
-
-@Composable
-private fun IntervalLazyColumnItem(
-  index: Int,
-  time: Long
-) {
-  Column(modifier = Modifier.padding(5.dp, 0.dp)) {
-    val lap = (index + 1).toString()
-    Text(text = "Lap $lap", fontSize = 16.sp)
-    Text(
-      text = convertLongToString(time),
-      modifier = Modifier.padding(5.dp, 0.dp),
-      fontSize = 14.sp
-    )
   }
 }
 
