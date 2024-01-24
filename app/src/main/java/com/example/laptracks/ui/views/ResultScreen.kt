@@ -43,7 +43,7 @@ object ResultScreenDestination : NavigationDestination {
 fun ResultScreen(
   viewModel: WorkoutViewModel,
   navigateUp: () -> Unit,
-  onSendEmailClick: (String,String) -> Unit,
+  onSendEmailClick: (String, String) -> Unit,
   onResetClick: () -> Unit
 ) {
 
@@ -68,7 +68,7 @@ fun ResultScreen(
       currentDate = currentDate.toString(),
       workout,
       onSendEmailClick = { currentDate, workout ->
-        onSendEmailClick(currentDate,workout)
+        onSendEmailClick(currentDate, workout)
       },
       modifier = Modifier.padding(innerPadding),
       onResetClick = onResetClick,
@@ -82,7 +82,7 @@ private fun ResultBody(
   participants: Map<Student, List<Long>>,
   currentDate: String,
   workout: String,
-  onSendEmailClick: (String,String) -> Unit,
+  onSendEmailClick: (String, String) -> Unit,
   onResetClick: () -> Unit,
   onSaveClick: () -> Unit,
   modifier: Modifier = Modifier,
@@ -99,16 +99,17 @@ private fun ResultBody(
             .padding(5.dp)
             .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
         ) {
-          Text(text = participant.key.displayName, modifier = Modifier.weight(0.2f), fontSize = 20.sp)
+          Text(
+            text = participant.key.displayName,
+            modifier = Modifier.weight(0.2f),
+            fontSize = 20.sp
+          )
           Spacer(modifier = Modifier)
           LazyRow(modifier = Modifier.weight(0.5f)) {
-            participants.forEach { participant ->
-              itemsIndexed(participant.value) { index, item ->
-                Column(modifier = Modifier.padding(5.dp, 0.dp)) {
-                  val lap = (index + 1).toString()
-                  Text(text = "Lap $lap", fontSize = 16.sp)
-                  Text(text = convertLongToString(item), fontSize = 14.sp)
-                }
+            itemsIndexed(participant.value) { index, item ->
+              Column(modifier = Modifier.padding(5.dp, 0.dp)) {
+                Text(text = "Lap ${index + 1}", fontSize = 16.sp)
+                Text(text = convertLongToString(item), fontSize = 14.sp)
               }
             }
           }
@@ -117,20 +118,30 @@ private fun ResultBody(
     }
     Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
       Button(onClick = {
-        onSaveClick() }, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.save), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
+        onSaveClick()
+      }, modifier = Modifier.fillMaxWidth()) {
+        Text(
+          stringResource(R.string.save),
+          fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+        )
       }
       Button(
         onClick = { onSendEmailClick(currentDate, workout) },
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.send_email), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
+        Text(
+          stringResource(R.string.send_email),
+          fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+        )
       }
       Button(
         onClick = { onResetClick() },
         modifier = Modifier.fillMaxWidth()
       ) {
-        Text(stringResource(R.string.reset), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
+        Text(
+          stringResource(R.string.reset),
+          fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+        )
       }
     }
   }
@@ -140,8 +151,15 @@ private fun ResultBody(
 @Composable
 fun ResultScreenPreview() {
   ResultBody(
-    participants = mapOf(Student(id = 0, firstName = "Bily", lastName = "Smith", displayName = "BSmith") to listOf(5_000L)),
-    onSendEmailClick = { _, _ ->},
+    participants = mapOf(
+      Student(
+        id = 0,
+        firstName = "Bily",
+        lastName = "Smith",
+        displayName = "BSmith"
+      ) to listOf(5_000L)
+    ),
+    onSendEmailClick = { _, _ -> },
     currentDate = "1234",
     workout = "Testing",
     onResetClick = {},
