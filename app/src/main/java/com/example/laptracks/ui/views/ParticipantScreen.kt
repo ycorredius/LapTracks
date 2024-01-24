@@ -24,7 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.laptracks.LapTrackAppTopAppBar
@@ -56,7 +55,7 @@ fun ParticipantScreen(
         scrollBehavior = scrollBehavior
       )
     },
-    ) { innerPadding ->
+  ) { innerPadding ->
 
     ParticipantBody(
       modifier = Modifier.padding(innerPadding),
@@ -72,7 +71,7 @@ fun ParticipantScreen(
 @Composable
 private fun ParticipantBody(
   modifier: Modifier,
-  participants: Map<Student,List<Long>>,
+  participants: Map<Student, List<Long>>,
   students: List<Student>,
   navigateToInterval: () -> Unit,
   onCheckBoxChange: (Student) -> Unit = {}
@@ -82,32 +81,29 @@ private fun ParticipantBody(
       .fillMaxSize(),
     verticalArrangement = Arrangement.SpaceBetween
   ) {
-    if (students.isEmpty()){
-      Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Currently no students saved!",
-          textAlign = TextAlign.Center,
-          fontSize = 24.sp,
-          fontWeight = FontWeight.Bold)
-      }
-    }else {
+    if (students.isEmpty()) {
+      Text(
+        text = "Currently no students saved!",
+        textAlign = TextAlign.Center,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold
+      )
+    } else {
       ParticipantList(
         studentList = students,
         participants = participants,
         onCheckBoxChange = { onCheckBoxChange(it) }
       )
     }
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(18.dp)
+    Button(
+      onClick = { navigateToInterval() },
+      enabled = participants.isNotEmpty(),
+      modifier = Modifier.fillMaxWidth()
     ) {
-      Button(
-        onClick = { navigateToInterval() },
-        enabled = participants.isNotEmpty(),
-        modifier = Modifier.fillMaxWidth()
-      ) {
-        Text(stringResource(R.string.next), fontSize = dimensionResource(R.dimen.button_font).value.sp)
-      }
+      Text(
+        stringResource(R.string.next),
+        fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+      )
     }
   }
 }
@@ -115,12 +111,11 @@ private fun ParticipantBody(
 @Composable
 private fun ParticipantList(
   studentList: List<Student>,
-  participants: Map<Student,List<Long>>,
+  participants: Map<Student, List<Long>>,
   onCheckBoxChange: (Student) -> Unit
-){
+) {
   LazyColumn {
-    items(studentList){
-      student ->
+    items(studentList) { student ->
       Row(
         verticalAlignment = Alignment.CenterVertically
       ) {
@@ -144,23 +139,30 @@ private fun ParticipantList(
 fun ParticipantScreenPreview() {
   ParticipantBody(
     modifier = Modifier,
-    participants = mapOf(Student(id = 0, firstName = "Billy", lastName = "Smith", displayName = "BSmith") to listOf(1_000L, 2_000L)),
+    participants = mapOf(
+      Student(
+        id = 0,
+        firstName = "Billy",
+        lastName = "Smith",
+        displayName = "BSmith"
+      ) to listOf(1_000L, 2_000L)
+    ),
     students = listOf(
       Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
     ),
-    onCheckBoxChange = { /* nothing */},
-    navigateToInterval = { /* nothing */},
+    onCheckBoxChange = { /* nothing */ },
+    navigateToInterval = { /* nothing */ },
   )
 }
 
 @Preview
 @Composable
-fun ParticipantEmptyScreenPreview(){
+fun ParticipantEmptyScreenPreview() {
   ParticipantBody(
     modifier = Modifier,
     participants = emptyMap(),
     students = emptyList(),
-    onCheckBoxChange = { /* nothing */},
-    navigateToInterval = { /* nothing */}
+    onCheckBoxChange = { /* nothing */ },
+    navigateToInterval = { /* nothing */ }
   )
 }

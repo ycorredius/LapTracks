@@ -78,10 +78,10 @@ fun StudentDetailsBody(
     Column {
       Text(text = "Workouts", style = MaterialTheme.typography.titleMedium)
       if (!workouts.isNullOrEmpty()) {
-        LazyColumn {
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp)) {
           item {
             Row(modifier = Modifier.padding(10.dp)) {
-              TableHeader(text = "Date", weight = 0.2f)
+              TableHeader(text = "Date", weight = 0.3f)
               TableHeader(text = "Lap", weight = 0.2f)
               TableHeader(text = "Average Lap", weight = 0.3f)
             }
@@ -101,9 +101,9 @@ fun StudentDetailsBody(
 fun WorkoutItem(
   workout: Workout
 ) {
-  Card() {
+  Card(shape = MaterialTheme.shapes.extraSmall){
     Row(modifier = Modifier.padding(10.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-      TableCell(text = workout.date, weight = 0.2f)
+      TableCell(text = workout.date, weight = 0.3f)
       TableCell(text = "${workout.lapList.size}", weight = 0.2f)
       TableCell(text = getLapTimeAverage(workout.lapList), weight = 0.3f)
     }
@@ -134,7 +134,7 @@ fun StudentDetailsPreview() {
       student = StudentDetails(
         firstName = "billy",
         lastName = "smith",
-        displayName = "bsmith"
+        displayName = "BSmith"
       ),
       workouts = emptyList()
     )

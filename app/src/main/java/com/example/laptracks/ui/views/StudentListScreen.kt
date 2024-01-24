@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -78,14 +79,16 @@ fun StudentListBody(
   navigateToStudentDetails: (Int) -> Unit,
   navigateToStudentEntry: () -> Unit
 ) {
-  Column(modifier = Modifier.fillMaxSize().padding(10.dp)) {
+  Column(modifier = Modifier
+    .fillMaxSize()
+    .padding(10.dp)) {
     if (students.isNotEmpty()) {
       LazyColumn(modifier) {
         items(students) { student ->
           StudentListItem(
             student,
             modifier = Modifier
-              .padding(8.dp)
+              .padding(0.dp, dimensionResource(id = R.dimen.column_padding))
               .clickable { navigateToStudentDetails(student.student.id) }
           )
         }
@@ -94,7 +97,7 @@ fun StudentListBody(
       Text(text = "No Students available")
     }
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-      Button(onClick = { navigateToStudentEntry() }) {
+      Button(onClick = { navigateToStudentEntry() }, shape = MaterialTheme.shapes.medium) {
         Text(text = "Add Student")
       }
     }
@@ -109,12 +112,13 @@ fun StudentListItem(
 ) {
   Card(
     modifier = modifier,
-    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+    shape = MaterialTheme.shapes.extraSmall
   ) {
     Row(
       modifier = Modifier
-        .padding(20.dp)
-        .fillMaxWidth()
+        .padding(10.dp)
+        .fillMaxWidth(),
     ) {
       Text(
         text = " ${student.student.firstName} ${student.student.lastName}",

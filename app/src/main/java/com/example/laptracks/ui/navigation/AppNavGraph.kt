@@ -19,8 +19,8 @@ import androidx.navigation.navArgument
 import com.example.laptracks.LapTrackAppBottomAppBar
 import com.example.laptracks.R
 import com.example.laptracks.ui.AppViewModelProvider
-import com.example.laptracks.ui.ResultScreen
-import com.example.laptracks.ui.ResultScreenDestination
+import com.example.laptracks.ui.views.ResultScreen
+import com.example.laptracks.ui.views.ResultScreenDestination
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 import com.example.laptracks.ui.views.IntervalDestination
 import com.example.laptracks.ui.views.IntervalScreen

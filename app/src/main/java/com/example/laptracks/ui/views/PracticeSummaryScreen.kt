@@ -1,5 +1,6 @@
 package com.example.laptracks.ui.views
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -101,18 +102,31 @@ fun PracticeSummaryBody(
           modifier = Modifier.fillMaxWidth(),
         ) {
           OutlinedButton(onClick = { onCancelClick() }, modifier = modifier.fillMaxWidth()) {
-            Text(text = stringResource(id = R.string.cancel), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
+            Text(
+              text = stringResource(id = R.string.cancel),
+              fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+            )
           }
-          Button(onClick = {
-            onStartClick()
-          },
+          Button(
+            onClick = {
+              onStartClick()
+            },
             modifier = Modifier.fillMaxWidth()
           ) {
-              if (isTimerRunning) Text(text = "Pause") else Text(text = stringResource(id = R.string.start),
-                fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
+            if (isTimerRunning) Text(text = "Pause") else Text(
+              text = stringResource(id = R.string.start),
+              fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+            )
           }
-          Button(onClick = { onFinishClick() }, enabled = !isEnabled, modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(id = R.string.finish), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
+          Button(
+            onClick = { onFinishClick() },
+            enabled = !isEnabled,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Text(
+              text = stringResource(id = R.string.finish),
+              fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+            )
           }
         }
       }
@@ -120,6 +134,7 @@ fun PracticeSummaryBody(
   }
 }
 
+@SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PracticeSummaryScreen(
@@ -183,22 +198,21 @@ private fun ParticipantSummaryLazyColumn(
   totalTime: Long,
   isEnabled: Boolean
 ) {
-  Column(
-    verticalArrangement = Arrangement.spacedBy(5.dp),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    modifier = Modifier.padding(5.dp)
-  ) {
+  Column {
     participants.forEach { participant ->
       Card(modifier = Modifier.clickable {
-        if (isEnabled) setParticipantTime(participant.key, totalTime) }) {
+        if (isEnabled) setParticipantTime(participant.key, totalTime)
+      }) {
         Row(
           horizontalArrangement = Arrangement.SpaceAround,
-          modifier = Modifier.padding(0.dp, 10.dp).fillMaxWidth()
+          modifier = Modifier
+            .padding(0.dp, 10.dp)
+            .fillMaxWidth()
         ) {
           Text(text = participant.key.displayName, style = MaterialTheme.typography.titleLarge)
           Column {
-           Text(text = "Total laps")
-           Text(text = "${participant.value.size}")
+            Text(text = "Total laps")
+            Text(text = "${participant.value.size}")
           }
           Column {
             Text(text = "Last Lap Time")
@@ -214,13 +228,21 @@ private fun ParticipantSummaryLazyColumn(
 @Composable
 fun PracticeSummaryScreenPreview() {
   LapTracksTheme {
-    PracticeSummaryBody(currentDate = "1234",
+    PracticeSummaryBody(
+      currentDate = "1234",
       interval = "400",
       isTimerRunning = false,
       isEnabled = false,
       onStartClick = {},
-      participants = mapOf(Student(id = 0, firstName = "Billy", lastName = "Smith", displayName = "BSmith") to listOf(5_000L)),
-      setParticipantTime = {_,_ ->},
+      participants = mapOf(
+        Student(
+          id = 0,
+          firstName = "Billy",
+          lastName = "Smith",
+          displayName = "BSmith"
+        ) to listOf(5_000L)
+      ),
+      setParticipantTime = { _, _ -> },
       totalTime = 5_000L,
       onFinishClick = {},
       onCancelClick = {}

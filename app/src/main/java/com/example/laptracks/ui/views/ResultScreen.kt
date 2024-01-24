@@ -1,5 +1,6 @@
-package com.example.laptracks.ui
+package com.example.laptracks.ui.views
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ object ResultScreenDestination : NavigationDestination {
   override val route = "results"
 }
 
+@SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultScreen(
@@ -116,7 +118,7 @@ private fun ResultBody(
         }
       }
     }
-    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Button(onClick = {
         onSaveClick()
       }, modifier = Modifier.fillMaxWidth()) {
@@ -154,7 +156,7 @@ fun ResultScreenPreview() {
     participants = mapOf(
       Student(
         id = 0,
-        firstName = "Bily",
+        firstName = "Billy",
         lastName = "Smith",
         displayName = "BSmith"
       ) to listOf(5_000L)
