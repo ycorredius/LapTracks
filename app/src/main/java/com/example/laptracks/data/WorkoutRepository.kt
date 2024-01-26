@@ -3,7 +3,7 @@ package com.example.laptracks.data
 import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
-  fun getWorkout(id: Int): Flow<Workout>
+  fun getWorkouts(): Flow<List<Workout>?>
 
   suspend fun insertWorkouts(workouts: Workout)
 }

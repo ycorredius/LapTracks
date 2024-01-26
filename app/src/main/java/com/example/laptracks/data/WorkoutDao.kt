@@ -11,6 +11,6 @@ interface WorkoutDao {
   @Insert(onConflict  = OnConflictStrategy.REPLACE)
   fun workoutInserts(vararg workouts: Workout)
 
-  @Query("SELECT * FROM workouts WHERE id = :id")
-  fun getWorkout(id: Int): Flow<Workout>
+  @Query("SELECT * FROM workouts")
+  fun getWorkouts(): Flow<List<Workout>?>
 }
