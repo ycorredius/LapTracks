@@ -6,6 +6,6 @@ import javax.inject.Inject
 class OfflineWorkoutRepository @Inject constructor(private val workoutDao: WorkoutDao) : WorkoutRepository {
   override fun getWorkouts(): Flow<List<Workout>?>  = workoutDao.getWorkouts()
 
-  override suspend fun insertWorkouts(workouts: Workout) = workoutDao.workoutInserts(workouts)
+  override suspend fun insertWorkout(workout: Workout) = workoutDao.workoutInserts(workout)
 
 }
