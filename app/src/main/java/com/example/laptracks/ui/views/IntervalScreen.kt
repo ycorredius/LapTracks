@@ -201,14 +201,16 @@ private fun IntervalDropdownMenu(
       color = Color.Transparent,
     ) {}
   }
-  DropdownMenu(expanded = expanded, onDismissRequest = { onDropdownClick(!expanded) }) {
+  DropdownMenu(expanded = expanded, onDismissRequest = { onDropdownClick(!expanded) }, modifier = Modifier.testTag(
+    stringResource(id = R.string.drop_down_menu) )) {
     intervals.forEach { interval ->
       DropdownMenuItem(text = { Text(text = interval) },
         onClick = {
           onChange(interval)
           onDropdownClick(!expanded)
           setInterval(interval)
-        }
+        },
+        modifier = Modifier.testTag(interval)
       )
     }
   }

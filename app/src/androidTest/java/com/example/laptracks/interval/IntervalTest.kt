@@ -3,6 +3,8 @@ package com.example.laptracks.interval
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -13,13 +15,15 @@ import com.example.laptracks.ServiceLocator
 import com.example.laptracks.StudentWorkoutRepository
 import com.example.laptracks.data.Student
 import com.example.laptracks.data.source.FakeStudentWorkoutRepository
-import com.example.laptracks.ui.views.IntervalDestination
 import kotlinx.coroutines.runBlocking
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.example.laptracks.R
+import com.example.laptracks.ui.views.IntervalDestination
+import com.example.laptracks.ui.views.ParticipantSummaryDestination
+import org.junit.Assert.assertEquals
 
 class IntervalTest {
 	private lateinit var studentWorkoutRepository: StudentWorkoutRepository
@@ -52,14 +56,43 @@ class IntervalTest {
 	}
 
 	@Test
-	fun participantScreen_NextButtonMovesToIntervalScreen(){
+	fun intervalScreen_NextButtonIsInitiallyDisabled(){
 		moveToInterval()
+
+		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.next)).assertIsNotEnabled().performClick()
 		assertEquals(navController.currentBackStackEntry?.destination?.route, IntervalDestination.route)
-		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(IntervalDestination.titleRes)).assertIsDisplayed()
+	}
+
+	@Test
+	fun intervalScreen_DropDownMenuAppearsWhenClicked(){
+		moveToInterval()
+
+		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.drop_down_button)).performClick()
+		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.drop_down_menu)).assertIsDisplayed()
+	}
+
+	@Test
+	fun intervalScreen_SelectingAnIntervalEnablesNextButton(){
+		moveToInterval()
+		selectedInterval()
+		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.next)).assertIsEnabled()
+	}
+
+	@Test
+	fun intervalScreen_AfterClickingNextButtonPracticeSummaryIsNextScreen(){
+		moveToInterval()
+		selectedInterval()
+		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.next)).performClick()
+		assertEquals(navController.currentBackStackEntry?.destination?.route, ParticipantSummaryDestination.route)
 	}
 
 	private fun moveToInterval(){
 		composeTestRule.onNodeWithTag("Billy").performClick()
 		composeTestRule.onNodeWithTag("Next").performClick()
+	}
+
+	private fun selectedInterval(){
+		composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.drop_down_button)).performClick()
+		composeTestRule.onNodeWithTag("200").performClick()
 	}
 }
