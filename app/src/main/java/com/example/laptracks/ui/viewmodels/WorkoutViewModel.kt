@@ -2,10 +2,11 @@ package com.example.laptracks.ui.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.example.laptracks.StudentWorkoutRepository
 import com.example.laptracks.data.Student
-import com.example.laptracks.data.StudentRepository
 import com.example.laptracks.data.Workout
-import com.example.laptracks.data.WorkoutRepository
+import com.example.laptracks.ui.views.ParticipantDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-  studentRepository: StudentRepository,
-  private val workoutRepository: WorkoutRepository
+  private val studentWorkoutRepository: StudentWorkoutRepository,
 ) : ViewModel() {
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L
@@ -33,7 +33,7 @@ class WorkoutViewModel @Inject constructor(
   val workoutUiState: StateFlow<WorkoutUiState> = _uiState.asStateFlow()
 
   val studentsUiState: StateFlow<StudentsUiState> =
-    studentRepository.getStudentsStream().map { StudentsUiState(it) }
+    studentWorkoutRepository.getStudentsStream().map { StudentsUiState(it) }
       .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
@@ -77,9 +77,27 @@ class WorkoutViewModel @Inject constructor(
   fun saveWorkout() {
     viewModelScope.launch(Dispatchers.IO) {
       workoutUiState.value.participantsList.forEach {
-        workoutRepository.insertWorkouts(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval))
+        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval))
       }
     }
+  }
+
+//  fun launchTime(isTimerRunning: Boolean){
+//    viewModelScope.launch {
+//      if (isTimerRunning) {
+//        delay(100)
+//         _uiState.update {
+//           it.copy(totalTime = it.totalTime + 100L)
+//         }
+//      }
+//    }
+//  }
+
+  fun onCancelClick(
+    navController: NavHostController
+  ) {
+    resetWorkout()
+    navController.navigate(ParticipantDestination.route)
   }
 }
 
@@ -90,7 +108,8 @@ fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, inte
 data class WorkoutUiState(
   val participantsList: Map<Student, List<Long>> = mapOf(),
   val interval: String = "",
-  val date: String = "${SimpleDateFormat("dd-MM-yyyy").format(Date())}"
+  val date: String = SimpleDateFormat("dd-MM-yyyy").format(Date()),
+  val totalTime: Long = 0L
 )
 
 data class StudentsUiState(

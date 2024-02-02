@@ -25,4 +25,6 @@
     <string name="send_email">Send Email</string>
     <string name="finish">Finish</string>
     <string name="start">Start</string>
+    <string name="no_students">Currently no students saved!</string>
+    <string name="drop_down_button">Dropdown Button</string>
 </resources>

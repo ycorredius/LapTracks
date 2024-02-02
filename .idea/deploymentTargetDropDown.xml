@@ -2,10 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="PracticeSummaryScreenPreview">
+      <entry key="IntervalTest">
+        <State />
+      </entry>
+      <entry key="ParticipantsScreenTest">
         <State />
       </entry>
       <entry key="app">
+        <State />
+      </entry>
+      <entry key="intervalScreen_VerifyNextButtonIsInitiallyDisabled()">
+        <State />
+      </entry>
+      <entry key="participantScreen_NextButtonIsEnabledWithParticipantChecked()">
+        <State />
+      </entry>
+      <entry key="participantScreen_NextButtonMovesToIntervalScreen() (1)">
         <State />
       </entry>
     </value>

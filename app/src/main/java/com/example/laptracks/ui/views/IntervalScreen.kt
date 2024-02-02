@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -72,7 +73,8 @@ fun IntervalScreen(
         title = stringResource(IntervalDestination.titleRes),
         canNavigateBack = true,
         scrollBehavior = scrollBehavior,
-        navigateUp = navigateUp
+        navigateUp = navigateUp,
+        modifier = Modifier.testTag(stringResource(IntervalDestination.titleRes))
       )
     }
   ) { innerPadding ->
@@ -151,11 +153,17 @@ private fun IntervalBody(
       Button(
         onClick = { navigateToParticipantSummary() },
         enabled = selectedText != context.getString(R.string.select_intervals),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+          .fillMaxWidth()
+          .testTag(stringResource(id = R.string.next))
       ) {
         Text(stringResource(R.string.next), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
-      OutlinedButton(onClick = { onCancelClick() }, modifier = Modifier.fillMaxWidth()) {
+      OutlinedButton(onClick = { onCancelClick() }, modifier = Modifier
+        .fillMaxWidth()
+        .testTag(
+          stringResource(id = R.string.cancel)
+        )) {
         Text(stringResource(R.string.cancel), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
     }
@@ -188,7 +196,8 @@ private fun IntervalDropdownMenu(
         .fillMaxWidth()
         .fillMaxHeight()
         .clip(MaterialTheme.shapes.extraSmall)
-        .clickable { onDropdownClick(!expanded) },
+        .clickable { onDropdownClick(!expanded) }
+        .testTag(stringResource(id = R.string.drop_down_button)),
       color = Color.Transparent,
     ) {}
   }

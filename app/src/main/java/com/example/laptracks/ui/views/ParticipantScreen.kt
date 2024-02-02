@@ -19,17 +19,16 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.data.Student
-import com.example.laptracks.ui.AppViewModelProvider
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 
@@ -42,7 +41,7 @@ object ParticipantDestination : NavigationDestination {
 @Composable
 fun ParticipantScreen(
   navigateToInterval: () -> Unit,
-  workoutViewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  workoutViewModel: WorkoutViewModel
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by workoutViewModel.workoutUiState.collectAsState()
@@ -69,8 +68,8 @@ fun ParticipantScreen(
 }
 
 @Composable
-private fun ParticipantBody(
-  modifier: Modifier,
+fun ParticipantBody(
+  modifier: Modifier = Modifier,
   participants: Map<Student, List<Long>>,
   students: List<Student>,
   navigateToInterval: () -> Unit,
@@ -98,7 +97,9 @@ private fun ParticipantBody(
     Button(
       onClick = { navigateToInterval() },
       enabled = participants.isNotEmpty(),
-      modifier = Modifier.fillMaxWidth()
+      modifier = Modifier
+        .fillMaxWidth()
+        .testTag(stringResource(id = R.string.next))
     ) {
       Text(
         stringResource(R.string.next),
@@ -123,7 +124,8 @@ private fun ParticipantList(
           checked = participants.containsKey(student),
           onCheckedChange = {
             onCheckBoxChange(student)
-          }
+          },
+          modifier = Modifier.testTag(student.firstName)
         )
         Text(
           text = student.displayName,
