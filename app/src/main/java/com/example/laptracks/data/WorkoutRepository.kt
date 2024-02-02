@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
   fun getWorkouts(): Flow<List<Workout>?>
 
-  suspend fun insertWorkouts(workouts: Workout)
+  suspend fun insertWorkout(workout: Workout)
 }

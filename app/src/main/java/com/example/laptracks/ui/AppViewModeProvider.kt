@@ -16,34 +16,33 @@ object AppViewModelProvider {
   val Factory = viewModelFactory {
     initializer {
       WorkoutViewModel(
-        lapTrackApplication().container.studentRepository,
-        lapTrackApplication().container.workoutRepository
+        lapTrackApplication().container.studentWorkoutRepository,
       )
     }
 
     initializer {
       StudentEntryViewModel(
-        lapTrackApplication().container.studentRepository
+        lapTrackApplication().container.studentWorkoutRepository
       )
     }
 
     initializer {
       StudentViewModel(
         this.createSavedStateHandle(),
-        lapTrackApplication().container.studentRepository
+        lapTrackApplication().container.studentWorkoutRepository
       )
     }
 
     initializer {
       StudentListViewModel(
-        lapTrackApplication().container.studentRepository
+        lapTrackApplication().container.studentWorkoutRepository
       )
     }
 
     initializer {
       StudentDetailsViewModel(
         this.createSavedStateHandle(),
-        lapTrackApplication().container.studentRepository
+        lapTrackApplication().container.studentWorkoutRepository
       )
     }
   }
