@@ -1,8 +1,10 @@
 package com.example.laptracks
 
-import android.icu.text.CaseMap.Title
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -15,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.laptracks.ui.navigation.AppNavHost
+import com.example.laptracks.ui.views.ParticipantDestination
+import com.example.laptracks.ui.views.StudentListDestination
 
 
 @Composable
@@ -42,6 +46,22 @@ fun LapTrackAppTopAppBar(
             contentDescription = stringResource(R.string.back_button)
           )
         }
+      }
+    }
+  )
+}
+
+@Composable
+fun LapTrackAppBottomAppBar(
+  navController: NavHostController
+){
+  BottomAppBar(
+    actions = {
+      IconButton(onClick = { navController.navigate(ParticipantDestination.route) }) {
+        Icon(imageVector = Icons.Filled.Home, contentDescription = "Home button")
+      }
+      IconButton(onClick = { navController.navigate(StudentListDestination.route) }) {
+        Icon(imageVector = Icons.Filled.Person , contentDescription = "Students")
       }
     }
   )

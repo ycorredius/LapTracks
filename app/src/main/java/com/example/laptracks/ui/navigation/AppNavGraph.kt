@@ -3,19 +3,20 @@ package com.example.laptracks.ui.navigation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.example.laptracks.LapTrackAppBottomAppBar
 import com.example.laptracks.R
 import com.example.laptracks.ui.AppViewModelProvider
-import com.example.laptracks.ui.ResultScreen
-import com.example.laptracks.ui.ResultScreenDestination
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 import com.example.laptracks.ui.views.IntervalDestination
 import com.example.laptracks.ui.views.IntervalScreen
@@ -23,8 +24,14 @@ import com.example.laptracks.ui.views.ParticipantDestination
 import com.example.laptracks.ui.views.ParticipantScreen
 import com.example.laptracks.ui.views.ParticipantSummaryDestination
 import com.example.laptracks.ui.views.PracticeSummaryScreen
+import com.example.laptracks.ui.views.ResultScreen
+import com.example.laptracks.ui.views.ResultScreenDestination
+import com.example.laptracks.ui.views.StudentDetailsDestination
+import com.example.laptracks.ui.views.StudentDetailsScreen
 import com.example.laptracks.ui.views.StudentEntryDestination
 import com.example.laptracks.ui.views.StudentEntryScreen
+import com.example.laptracks.ui.views.StudentListDestination
+import com.example.laptracks.ui.views.StudentListScreen
 
 @Composable
 fun AppNavHost(
@@ -32,68 +39,82 @@ fun AppNavHost(
   modifier: Modifier = Modifier,
   viewModel: WorkoutViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-  NavHost(
-    navController = navController,
-    startDestination = ParticipantDestination.route,
-    modifier = modifier
-  ) {
-    composable(route = ParticipantDestination.route) {
-      val workoutViewModel = hiltViewModel<WorkoutViewModel>()
-      ParticipantScreen(
-        navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
-        navigateToInterval = { navController.navigate(IntervalDestination.route) },
-        workoutViewModel = workoutViewModel
-      )
+  Scaffold(
+    bottomBar = {
+      LapTrackAppBottomAppBar(navController)
     }
-
-    composable(route = StudentEntryDestination.route) {
-      StudentEntryScreen(
-        navigateUp = { navController.navigateUp() },
-        navigateBack = { navController.popBackStack() },
-      )
-    }
-
-    composable(route = IntervalDestination.route) {
-      val parentEntry = remember(it) {
-        navController.getBackStackEntry(ParticipantDestination.route)
+  ) { innerPadding ->
+    NavHost(
+      navController = navController,
+      startDestination = ParticipantDestination.route,
+      modifier = modifier.padding(innerPadding)
+    ) {
+      composable(route = ParticipantDestination.route) {
+        ParticipantScreen(
+          navigateToInterval = { navController.navigate(IntervalDestination.route) },
+          workoutViewModel = viewModel
+        )
       }
-      val parentViewModel = hiltViewModel<WorkoutViewModel>(parentEntry)
-      IntervalScreen(
-        navigateToParticipantSummary = { navController.navigate(ParticipantSummaryDestination.route) },
-        navigateUp = { navController.navigateUp() },
-        onCancelClick = { viewModel.onCancelClick(navController) },
-        viewModel = parentViewModel
-      )
-    }
 
-    composable(route = ParticipantSummaryDestination.route) {
-      val parentEntry = remember(it) {
-        navController.getBackStackEntry(ParticipantDestination.route)
+      composable(route = StudentEntryDestination.route) {
+        StudentEntryScreen(
+          navigateUp = { navController.navigateUp() },
+          navigateBack = { navController.popBackStack() },
+        )
       }
-      val parentViewModel = hiltViewModel<WorkoutViewModel>(parentEntry)
-      PracticeSummaryScreen(
-        workoutViewModel = parentViewModel,
-        navigateUp = { navController.navigateUp() },
-        onFinishClick = { navController.navigate(ResultScreenDestination.route) },
-        onCancelClick = { viewModel.onCancelClick(navController) }
-      )
-    }
-    composable(route = ResultScreenDestination.route) {
-      val context = LocalContext.current
-      val parentEntry = remember(it) {
-        navController.getBackStackEntry(ParticipantDestination.route)
+
+      composable(route = IntervalDestination.route) {
+        IntervalScreen(
+          navigateToParticipantSummary = { navController.navigate(ParticipantSummaryDestination.route) },
+          navigateUp = { navController.navigateUp() },
+          onCancelClick = { viewModel.onCancelClick(navController) },
+          viewModel = viewModel
+        )
       }
-      val parentViewModel = hiltViewModel<WorkoutViewModel>(parentEntry)
-      ResultScreen(
-        viewModel = parentViewModel,
-        navigateUp = { navController.navigateUp() },
-        onCompleteClick = { subject: String, workout: String ->
-          composeEmail(context, subject = subject, bodyText = workout)
-        },
-        onResetClick = { viewModel.onCancelClick(navController) }
-      )
+
+      composable(route = ParticipantSummaryDestination.route) {
+        PracticeSummaryScreen(
+          navigateUp = { navController.navigateUp() },
+          onFinishClick = { navController.navigate(ResultScreenDestination.route) },
+          onCancelClick = { viewModel.onCancelClick(navController) },
+          workoutViewModel = viewModel
+        )
+      }
+      composable(route = ResultScreenDestination.route) {
+        val context = LocalContext.current
+
+        ResultScreen(
+          viewModel = viewModel,
+          navigateUp = { navController.navigateUp() },
+          onSendEmailClick = { subject: String, workout: String ->
+            composeEmail(context, subject = subject, bodyText = workout)
+          },
+          onResetClick = { viewModel.onCancelClick(navController) }
+        )
+      }
+
+      composable(route = StudentListDestination.route) {
+        StudentListScreen(
+          navigateUp = { navController.navigateUp() },
+          navigateToStudentDetails = {
+            navController.navigate("${StudentDetailsDestination.route}/${it}")
+          },
+          navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
+        )
+      }
+
+      composable(
+        route = StudentDetailsDestination.routeWithArg,
+        arguments = listOf(navArgument(StudentDetailsDestination.studentIdArg) {
+          type = NavType.IntType
+        })
+      ) {
+        StudentDetailsScreen( navigateUp = {navController.navigateUp()} )
+      }
+
     }
   }
+
 }
 
 private fun WorkoutViewModel.onCancelClick(

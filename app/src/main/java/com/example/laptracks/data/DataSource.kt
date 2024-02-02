@@ -1,12 +1,6 @@
 package com.example.laptracks.data
 
 object DataSource {
-  val students = listOf(
-    "Tommy",
-    "Lisa",
-    "Brenda"
-  )
-
   val intervals = listOf(
     "40",
     "100",

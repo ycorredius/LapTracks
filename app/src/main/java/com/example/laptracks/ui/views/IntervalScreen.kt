@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.data.DataSource
+import com.example.laptracks.data.Student
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.theme.LapTracksTheme
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
@@ -64,15 +66,15 @@ fun IntervalScreen(
 ) {
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
   val workoutUiState by viewModel.workoutUiState.collectAsState()
-  val selectedInterval =
-    workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
+  val selectedInterval = workoutUiState.interval.ifBlank { stringResource(R.string.select_intervals) }
   Scaffold(
     topBar = {
       LapTrackAppTopAppBar(
         title = stringResource(IntervalDestination.titleRes),
         canNavigateBack = true,
         scrollBehavior = scrollBehavior,
-        navigateUp = navigateUp
+        navigateUp = navigateUp,
+        modifier = Modifier.testTag(stringResource(IntervalDestination.titleRes))
       )
     }
   ) { innerPadding ->
@@ -90,7 +92,7 @@ fun IntervalScreen(
 
 @Composable
 private fun IntervalBody(
-  participants: Map<String, List<Long>>,
+  participants: Map<Student, List<Long>>,
   selectedInterval: String,
   setInterval: (String) -> Unit,
   modifier: Modifier = Modifier,
@@ -118,7 +120,7 @@ private fun IntervalBody(
         )
         Column {
           participants.forEach { participant ->
-            Text(text = participant.key, fontSize = 18.sp)
+            Text(text = participant.key.displayName, fontSize = 18.sp)
           }
         }
       }
@@ -151,12 +153,18 @@ private fun IntervalBody(
       Button(
         onClick = { navigateToParticipantSummary() },
         enabled = selectedText != context.getString(R.string.select_intervals),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+          .fillMaxWidth()
+          .testTag(stringResource(id = R.string.next))
       ) {
-        Text(stringResource(R.string.next))
+        Text(stringResource(R.string.next), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
-      OutlinedButton(onClick = { onCancelClick() }, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(R.string.cancel))
+      OutlinedButton(onClick = { onCancelClick() }, modifier = Modifier
+        .fillMaxWidth()
+        .testTag(
+          stringResource(id = R.string.cancel)
+        )) {
+        Text(stringResource(R.string.cancel), fontSize = dimensionResource(id = R.dimen.button_font).value.sp)
       }
     }
   }
@@ -188,7 +196,8 @@ private fun IntervalDropdownMenu(
         .fillMaxWidth()
         .fillMaxHeight()
         .clip(MaterialTheme.shapes.extraSmall)
-        .clickable { onDropdownClick(!expanded) },
+        .clickable { onDropdownClick(!expanded) }
+        .testTag(stringResource(id = R.string.drop_down_button)),
       color = Color.Transparent,
     ) {}
   }
@@ -210,7 +219,7 @@ private fun IntervalDropdownMenu(
 fun IntervalScreenPreview() {
   LapTracksTheme {
     IntervalBody(
-      participants = mapOf("BSmith" to listOf(1_000L, 2_000L)),
+      participants = mapOf(Student(id = 0, "Billy","Smith", "BSmith") to listOf(1_000L, 2_000L)),
       selectedInterval = "800",
       setInterval = {},
       navigateToParticipantSummary = {},

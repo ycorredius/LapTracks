@@ -50,7 +50,9 @@ android {
 }
 
 dependencies {
+  implementation("androidx.navigation:navigation-testing:2.7.6")
   val nav_version = "2.7.6"
+  val hilt_version = "2.50"
 
   implementation("androidx.core:core-ktx:1.12.0")
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -66,12 +68,23 @@ dependencies {
   ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
   implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
-  implementation("com.google.dagger:hilt-android:2.50")
-  kapt("com.google.dagger:hilt-android-compiler:2.50")
+  implementation("com.google.dagger:hilt-android:$hilt_version")
+  kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
   implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
   kapt("androidx.hilt:hilt-compiler:1.1.0")
 
+  kaptTest("com.google.dagger:hilt-android-compiler:2.50")
+  androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
+  kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.50")
+
+  androidTestImplementation ("com.google.dagger:hilt-android-testing:2.50")
+  androidTestAnnotationProcessor("com.google.dagger:hilt-compiler:2.50")
+
+  testImplementation("com.google.dagger:hilt-android-testing:2.50")
+  testAnnotationProcessor("com.google.dagger:hilt-compiler:2.50")
+
   testImplementation("junit:junit:4.13.2")
+  testImplementation("org.robolectric:robolectric:4.11.1")
   androidTestImplementation("androidx.test.ext:junit:1.1.5")
   androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
   androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))

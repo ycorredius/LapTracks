@@ -1,16 +1,15 @@
 package com.example.laptracks.data
 
 import android.content.Context
-import com.example.laptracks.data.AppDatabase.Companion.getDatabase
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
+import com.example.laptracks.ServiceLocator
+import com.example.laptracks.StudentWorkoutRepository
 
 interface AppContainer {
-  val studentRepository: StudentRepository
+  val studentWorkoutRepository: StudentWorkoutRepository
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
-  override val studentRepository: StudentRepository by lazy {
-    OfflineStudentRepository(AppDatabase.getDatabase(context).studentDao())
+  override val studentWorkoutRepository: StudentWorkoutRepository by lazy {
+    ServiceLocator.provideStudentWorkoutRepositoryImpl(context)
   }
 }

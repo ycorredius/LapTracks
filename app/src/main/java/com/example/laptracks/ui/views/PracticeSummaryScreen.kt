@@ -1,5 +1,7 @@
 package com.example.laptracks.ui.views
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,9 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.convertLongToString
+import com.example.laptracks.data.Student
+import com.example.laptracks.getLapTime
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.theme.LapTracksTheme
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
@@ -48,8 +54,8 @@ object ParticipantSummaryDestination : NavigationDestination {
 fun PracticeSummaryBody(
   currentDate: String,
   interval: String,
-  participants: Map<String, List<Long>>,
-  setParticipantTime: (String, Long) -> Unit,
+  participants: Map<Student, List<Long>>,
+  setParticipantTime: (Student, Long) -> Unit,
   totalTime: Long,
   isEnabled: Boolean,
   isTimerRunning: Boolean,
@@ -96,17 +102,31 @@ fun PracticeSummaryBody(
           modifier = Modifier.fillMaxWidth(),
         ) {
           OutlinedButton(onClick = { onCancelClick() }, modifier = modifier.fillMaxWidth()) {
-            Text(text = "Cancel")
+            Text(
+              text = stringResource(id = R.string.cancel),
+              fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+            )
           }
-          Button(onClick = {
-            onStartClick()
-          },
+          Button(
+            onClick = {
+              onStartClick()
+            },
             modifier = Modifier.fillMaxWidth()
           ) {
-            if (isTimerRunning) Text(text = "Pause") else Text(text = "Start")
+            if (isTimerRunning) Text(text = "Pause") else Text(
+              text = stringResource(id = R.string.start),
+              fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+            )
           }
-          Button(onClick = { onFinishClick() }, enabled = !isEnabled, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Finish")
+          Button(
+            onClick = { onFinishClick() },
+            enabled = !isEnabled,
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Text(
+              text = stringResource(id = R.string.finish),
+              fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+            )
           }
         }
       }
@@ -114,6 +134,7 @@ fun PracticeSummaryBody(
   }
 }
 
+@SuppressLint("SimpleDateFormat")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PracticeSummaryScreen(
@@ -147,7 +168,7 @@ fun PracticeSummaryScreen(
         navigateUp = navigateUp
       )
     },
-    modifier = Modifier.padding(16.dp)
+    modifier = Modifier.padding(30.dp, 0.dp)
   ) { innerPadding ->
     PracticeSummaryBody(
       currentDate = currentDate,
@@ -172,31 +193,30 @@ fun PracticeSummaryScreen(
 
 @Composable
 private fun ParticipantSummaryLazyColumn(
-  participants: Map<String, List<Long>>,
-  setParticipantTime: (String, Long) -> Unit,
+  participants: Map<Student, List<Long>>,
+  setParticipantTime: (Student, Long) -> Unit,
   totalTime: Long,
   isEnabled: Boolean
 ) {
-  Column(
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
-  ) {
+  Column {
     participants.forEach { participant ->
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(0.dp, 10.dp)
-      ) {
-        Button(
-          onClick = { setParticipantTime(participant.key, totalTime) },
-          enabled = isEnabled
+      Card(modifier = Modifier.clickable {
+        if (isEnabled) setParticipantTime(participant.key, totalTime)
+      }) {
+        Row(
+          horizontalArrangement = Arrangement.SpaceAround,
+          modifier = Modifier
+            .padding(0.dp, 10.dp)
+            .fillMaxWidth()
         ) {
-          Text(participant.key, fontSize = 18.sp)
-        }
-        LazyRow {
-          participant.value.forEachIndexed { index, time ->
-            item {
-              IntervalLazyColumnItem(index = index, time = time)
-            }
+          Text(text = participant.key.displayName, style = MaterialTheme.typography.titleLarge)
+          Column {
+            Text(text = "Total laps")
+            Text(text = "${participant.value.size}")
+          }
+          Column {
+            Text(text = "Last Lap Time")
+            Text(text = getLapTime(participant.value))
           }
         }
       }
@@ -204,33 +224,25 @@ private fun ParticipantSummaryLazyColumn(
   }
 }
 
-@Composable
-private fun IntervalLazyColumnItem(
-  index: Int,
-  time: Long
-) {
-  Column(modifier = Modifier.padding(5.dp, 0.dp)) {
-    val lap = (index + 1).toString()
-    Text(text = "Lap $lap", fontSize = 16.sp)
-    Text(
-      text = convertLongToString(time),
-      modifier = Modifier.padding(5.dp, 0.dp),
-      fontSize = 14.sp
-    )
-  }
-}
-
 @Preview
 @Composable
 fun PracticeSummaryScreenPreview() {
   LapTracksTheme {
-    PracticeSummaryBody(currentDate = "1234",
+    PracticeSummaryBody(
+      currentDate = "1234",
       interval = "400",
       isTimerRunning = false,
       isEnabled = false,
       onStartClick = {},
-      participants = mapOf("Billy" to listOf(5_000L)),
-      setParticipantTime = {_,_ ->},
+      participants = mapOf(
+        Student(
+          id = 0,
+          firstName = "Billy",
+          lastName = "Smith",
+          displayName = "BSmith"
+        ) to listOf(5_000L)
+      ),
+      setParticipantTime = { _, _ -> },
       totalTime = 5_000L,
       onFinishClick = {},
       onCancelClick = {}

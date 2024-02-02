@@ -6,7 +6,11 @@ interface StudentRepository{
 
   fun getStudentsStream(): Flow<List<Student>>
 
+  fun getStudentsWithWorkoutsStream():Flow<Map<Student, List<Workout>>>
+
   fun getStudent(id: Int): Flow<Student?>
+
+  fun loadStudentWithWorkouts(id: Int): Flow<Map<Student, List<Workout>?>>
 
   suspend fun insertStudent(student: Student)
 

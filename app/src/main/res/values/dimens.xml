@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="interval_divider">100dp</dimen>
+    <dimen name="button_font">18sp</dimen>
+    <dimen name="column_padding">5dp</dimen>
 </resources>
