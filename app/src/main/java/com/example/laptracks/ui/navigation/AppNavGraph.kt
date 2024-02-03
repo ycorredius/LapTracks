@@ -76,7 +76,6 @@ fun AppNavHost(
         PracticeSummaryScreen(
           navigateUp = { navController.navigateUp() },
           onFinishClick = { navController.navigate(ResultScreenDestination.route) },
-          onCancelClick = { viewModel.onCancelClick(navController) },
           workoutViewModel = viewModel
         )
       }
