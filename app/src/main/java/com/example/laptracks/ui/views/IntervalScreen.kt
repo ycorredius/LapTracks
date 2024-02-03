@@ -78,15 +78,15 @@ fun IntervalScreen(
       )
     }
   ) { innerPadding ->
-
-    IntervalBody(
-      participants = workoutUiState.participantsList,
-      selectedInterval = selectedInterval,
-      setInterval = { viewModel.setInterval(it) },
-      modifier = Modifier.padding(innerPadding),
-      navigateToParticipantSummary = navigateToParticipantSummary,
-      onCancelClick
-    )
+    Box(modifier = Modifier.padding(innerPadding)) {
+      IntervalBody(
+        participants = workoutUiState.participantsList,
+        selectedInterval = selectedInterval,
+        setInterval = { viewModel.setInterval(it) },
+        navigateToParticipantSummary = navigateToParticipantSummary,
+        onCancelClick
+      )
+    }
   }
 }
 
@@ -95,7 +95,6 @@ private fun IntervalBody(
   participants: Map<Student, List<Long>>,
   selectedInterval: String,
   setInterval: (String) -> Unit,
-  modifier: Modifier = Modifier,
   navigateToParticipantSummary: () -> Unit,
   onCancelClick: () -> Unit
 ) {
@@ -108,9 +107,8 @@ private fun IntervalBody(
     verticalArrangement = Arrangement.SpaceBetween,
     modifier = Modifier
       .fillMaxHeight()
-      .padding(16.dp)
   ) {
-    Row(modifier) {
+    Row(modifier = Modifier.padding(15.dp)) {
       Column(modifier = Modifier.weight(1f)) {
         Text(stringResource(R.string.participants), fontSize = 20.sp)
         Divider(
