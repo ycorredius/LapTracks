@@ -1,5 +1,6 @@
 package com.example.laptracks
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
@@ -57,12 +58,13 @@ fun LapTrackAppBottomAppBar(
 ){
   BottomAppBar(
     actions = {
-      IconButton(onClick = { navController.navigate(ParticipantDestination.route) }) {
+      IconButton(onClick = { navController.navigate(ParticipantDestination.route) }, Modifier.weight(0.3f)) {
         Icon(imageVector = Icons.Filled.Home, contentDescription = "Home button")
       }
-      IconButton(onClick = { navController.navigate(StudentListDestination.route) }) {
+      Spacer(modifier = Modifier.weight(0.1f))
+      IconButton(onClick = { navController.navigate(StudentListDestination.route) }, Modifier.weight(0.3f)) {
         Icon(imageVector = Icons.Filled.Person , contentDescription = "Students")
       }
-    }
+    },
   )
 }
