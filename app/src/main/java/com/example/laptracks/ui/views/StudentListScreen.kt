@@ -154,7 +154,7 @@ fun StudentListItem(
 fun StudentListBodyPreview() {
   StudentListBody(
     students = listOf(StudentUiModel(student = Student(0,"bily","smith","bsmith"), workouts = listOf(
-      Workout(0, "somedate", emptyList(),"400",0)
+      Workout(0, "somedate", emptyList(),"400",0, totalTime = 5_000L)
     ))),
     navigateToStudentDetails = {},
     navigateToStudentEntry = {}

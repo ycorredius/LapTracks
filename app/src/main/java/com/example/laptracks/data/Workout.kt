@@ -10,5 +10,6 @@ data class Workout(
   val date: String,
   val lapList: List<Long>,
   val interval: String,
-  val studentId: Int
+  val studentId: Int,
+  val totalTime: Long
 )

@@ -38,7 +38,8 @@ import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.convertLongToString
 import com.example.laptracks.data.Student
-import com.example.laptracks.getLapTime
+import com.example.laptracks.getLapTimeLong
+import com.example.laptracks.getLapTimeString
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.theme.LapTracksTheme
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
@@ -192,7 +193,7 @@ private fun ParticipantSummaryLazyColumn(
 		participants.forEach { participant ->
 			Card(
 				modifier = Modifier.clickable {
-					if (isEnabled) setParticipantTime(participant.key, totalTime)
+					if (isEnabled) setParticipantTime(participant.key, getLapTimeLong(participant.value,totalTime))
 				},
 				colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
 				shape = MaterialTheme.shapes.extraSmall
@@ -213,7 +214,7 @@ private fun ParticipantSummaryLazyColumn(
 					}
 					Column {
 						Text(text = "Last lap")
-						Text(text = getLapTime(participant.value))
+						Text(text = getLapTimeString(participant.value))
 					}
 				}
 			}

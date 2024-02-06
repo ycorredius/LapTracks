@@ -74,10 +74,11 @@ class WorkoutViewModel @Inject constructor(
   fun resetWorkout() {
     _uiState.value = WorkoutUiState()
   }
+
   fun saveWorkout() {
     viewModelScope.launch(Dispatchers.IO) {
       workoutUiState.value.participantsList.forEach {
-        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval))
+        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
       }
     }
   }
@@ -101,8 +102,9 @@ class WorkoutViewModel @Inject constructor(
   }
 }
 
-fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String): Workout{
-  return Workout(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval)
+//TODO: Reconfigure this to create an more readable and optimized experience
+fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String, totalTime: Long): Workout{
+  return Workout(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval, totalTime = totalTime)
 }
 
 data class WorkoutUiState(

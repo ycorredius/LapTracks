@@ -126,7 +126,7 @@ private fun ParticipantList(
 	participants: Map<Student, List<Long>>,
 	onCheckBoxChange: (Student) -> Unit
 ) {
-	LazyColumn {
+	LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp)) {
 		items(studentList) { student ->
 			Row(
 				verticalAlignment = Alignment.CenterVertically,

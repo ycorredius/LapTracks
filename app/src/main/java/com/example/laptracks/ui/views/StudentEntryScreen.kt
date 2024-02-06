@@ -9,11 +9,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,7 +63,7 @@ fun StudentEntryScreen(
       onSaveClick = {
         coroutine.launch {
           viewModel.saveStudent()
-          navigateBack()
+          if (viewModel.studentUiState.isStudentValid) navigateBack()
         } },
       modifier = Modifier
         .padding(innerPadding)
@@ -74,12 +79,18 @@ fun StudentEntryBody(
   onSaveClick: () -> Unit,
   studentUiState: StudentUiState
 ) {
+  var isError by rememberSaveable { mutableStateOf(false) }
+
   Column(modifier = modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
     StudentEntryForm(
       onChangeValue = onChangeValue,
-      studentDetails = studentUiState.studentDetails
+      studentDetails = studentUiState.studentDetails,
+      isError = isError
     )
-    Button(onClick = { onSaveClick() }, modifier = Modifier.fillMaxWidth()) {
+    Button(onClick = {
+      onSaveClick()
+      isError = !studentUiState.isStudentValid
+                     }, modifier = Modifier.fillMaxWidth()) {
       Text(stringResource(R.string.save))
     }
   }
@@ -88,7 +99,8 @@ fun StudentEntryBody(
 @Composable
 fun StudentEntryForm(
   onChangeValue: (StudentDetails) -> Unit = {},
-  studentDetails: StudentDetails
+  studentDetails: StudentDetails,
+  isError: Boolean
 ) {
   Column(
     verticalArrangement = Arrangement.spacedBy(14.dp),
@@ -99,6 +111,12 @@ fun StudentEntryForm(
       value = studentDetails.firstName,
       onValueChange = { onChangeValue(studentDetails.copy(firstName = it)) },
       label = { Text(stringResource(R.string.first_name)) },
+      isError = isError && studentDetails.firstName.isEmpty(),
+      supportingText = {
+                       if(studentDetails.firstName.isEmpty() && isError){
+                         Text(text = "First Name Can't be Blank", color = MaterialTheme.colorScheme.error)
+                       }
+      },
       modifier = Modifier.fillMaxWidth(),
       enabled = true,
       singleLine = true
@@ -107,6 +125,12 @@ fun StudentEntryForm(
       value = studentDetails.lastName,
       onValueChange = { onChangeValue(studentDetails.copy(lastName = it)) },
       label = { Text(stringResource(R.string.last_name)) },
+      isError = isError && studentDetails.lastName.isEmpty(),
+      supportingText = {
+        if(studentDetails.lastName.isEmpty() && isError){
+          Text(text = "Last Name Can't be Blank", color = MaterialTheme.colorScheme.error)
+        }
+      },
       modifier = Modifier.fillMaxWidth(),
       enabled = true,
       singleLine = true
@@ -115,6 +139,12 @@ fun StudentEntryForm(
       value = studentDetails.displayName,
       onValueChange = { onChangeValue(studentDetails.copy(displayName = it)) },
       label = { Text(stringResource(R.string.display_name)) },
+      isError = studentDetails.displayName.isEmpty() && isError,
+      supportingText = {
+        if(studentDetails.displayName.isEmpty() && isError){
+          Text(text = "Display Name Can't be Blank", color = MaterialTheme.colorScheme.error)
+        }
+      },
       modifier = Modifier.fillMaxWidth(),
       enabled = true,
       singleLine = true

@@ -20,7 +20,7 @@ fun formatResults(participantTimes: Map<Student,List<Long>>): String {
   return workout
 }
 
-fun getLapTimeAverage(laps: List<Long>): String{
+fun getLapTimeAverage(laps: List<Long>, totalTime: Long): String{
   var result = 0L
 
   laps.forEach {
@@ -31,12 +31,20 @@ fun getLapTimeAverage(laps: List<Long>): String{
   return convertLongToString(result)
 }
 
-fun getLapTime(laps: List<Long>): String{
+fun getLapTimeString(laps: List<Long>): String{
   return if(laps.isEmpty()) {
     "0"
   } else if(laps.size <= 1){
     convertLongToString(laps[0])
   }else {
     convertLongToString(laps[laps.size - 1] - laps[laps.size - 2])
+  }
+}
+
+fun getLapTimeLong(laps: List<Long>, totalTime: Long): Long{
+  return if(laps.isEmpty() || laps.size <= 1){
+    totalTime
+  }else {
+    totalTime - laps[laps.size - 1]
   }
 }

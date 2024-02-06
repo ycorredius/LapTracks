@@ -25,7 +25,7 @@ import com.example.laptracks.LapTrackAppTopAppBar
 import com.example.laptracks.R
 import com.example.laptracks.data.Student
 import com.example.laptracks.formatResults
-import com.example.laptracks.getLapTime
+import com.example.laptracks.getLapTimeAverage
 import com.example.laptracks.ui.navigation.NavigationDestination
 import com.example.laptracks.ui.viewmodels.WorkoutViewModel
 import java.text.SimpleDateFormat
@@ -64,6 +64,7 @@ fun ResultScreen(
 	) { innerPadding ->
 		ResultBody(
 			participants = workoutUiState.participantsList,
+			totalTime = workoutUiState.totalTime,
 			currentDate = currentDate.toString(),
 			workout,
 			onSendEmailClick = { currentDate, workout ->
@@ -79,6 +80,7 @@ fun ResultScreen(
 @Composable
 private fun ResultBody(
 	participants: Map<Student, List<Long>>,
+	totalTime: Long,
 	currentDate: String,
 	workout: String,
 	onSendEmailClick: (String, String) -> Unit,
@@ -109,7 +111,7 @@ private fun ResultBody(
 					}
 					Column {
 						Text(text = "Average lap")
-						Text(text = getLapTime(participant.value))
+						Text(text = getLapTimeAverage(participant.value, totalTime = totalTime))
 					}
 				}
 			}
@@ -120,6 +122,7 @@ private fun ResultBody(
 		) {
 			Button(onClick = {
 				onSaveClick()
+				onResetClick()
 			}, modifier = Modifier.fillMaxWidth()) {
 				Text(
 					stringResource(R.string.save),
@@ -160,6 +163,7 @@ fun ResultScreenPreview() {
 				displayName = "BSmith"
 			) to listOf(5_000L)
 		),
+		totalTime = 5_000L,
 		onSendEmailClick = { _, _ -> },
 		currentDate = "1234",
 		workout = "Testing",
