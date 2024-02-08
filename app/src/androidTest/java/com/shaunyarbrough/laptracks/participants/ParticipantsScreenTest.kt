@@ -83,13 +83,4 @@ class ParticipantsScreenTest {
 		val students = Student(id=1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
 		studentWorkoutRepository.insertStudent(students)
 	}
-
-	private fun moveToInterval(){
-		loadStudents()
-
-		composeTestRule.waitForIdle()
-		composeTestRule.onNodeWithTag("Billy").performClick()
-		composeTestRule.onNodeWithTag("Next").performClick()
-		assertEquals(navController.currentBackStackEntry?.destination?.route, IntervalDestination.route)
-	}
 }
