@@ -116,6 +116,7 @@ fun AppNavHost(
 
 }
 
+//Save in case we change our mind on whether or not to use it.
 private fun WorkoutViewModel.onCancelClick(
   navController: NavHostController
 ) {
