@@ -4,14 +4,15 @@ plugins {
   kotlin("kapt")
   id("com.google.devtools.ksp")
   id("com.google.dagger.hilt.android")
+  id("com.google.gms.google-services")
 }
 
 android {
-  namespace = "com.example.laptracks"
+  namespace = "com.shaunyarbrough.laptracks"
   compileSdk = 34
 
   defaultConfig {
-    applicationId = "com.example.laptracks"
+    applicationId = "com.shaunyarbrough.laptracks"
     minSdk = 24
     targetSdk = 34
     versionCode = 1
@@ -72,6 +73,10 @@ dependencies {
   kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
   implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
   kapt("androidx.hilt:hilt-compiler:1.1.0")
+
+  //Firebase dependencies
+  implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
+  implementation("com.google.firebase:firebase-analytics")
 
   kaptTest("com.google.dagger:hilt-android-compiler:2.50")
   androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
