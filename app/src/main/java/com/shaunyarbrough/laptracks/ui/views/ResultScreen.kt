@@ -64,7 +64,6 @@ fun ResultScreen(
 	) { innerPadding ->
 		ResultBody(
 			participants = workoutUiState.participantsList,
-			totalTime = workoutUiState.totalTime,
 			currentDate = currentDate.toString(),
 			workout,
 			onSendEmailClick = { currentDate, workout ->
@@ -80,7 +79,6 @@ fun ResultScreen(
 @Composable
 private fun ResultBody(
 	participants: Map<Student, List<Long>>,
-	totalTime: Long,
 	currentDate: String,
 	workout: String,
 	onSendEmailClick: (String, String) -> Unit,
@@ -163,7 +161,6 @@ fun ResultScreenPreview() {
 				displayName = "BSmith"
 			) to listOf(5_000L)
 		),
-		totalTime = 5_000L,
 		onSendEmailClick = { _, _ -> },
 		currentDate = "1234",
 		workout = "Testing",
