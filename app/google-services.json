@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "687439482349",
+    "project_id": "lap-tracks",
+    "storage_bucket": "lap-tracks.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687439482349:android:8027eb497797de60386be4",
+        "android_client_info": {
+          "package_name": "com.shaunyarbrough.laptracks"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMW2o4dVxGAz78-R_TlOi0gTaoI8fszN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
