@@ -1,0 +1,24 @@
+name: build
+on:
+  push:
+    branches: [dev,main]
+
+jobs:
+  build:
+    runs-on: macos
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Setup Jdk
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: "1.8"
+          distribution: "adopt"
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+            # Run Tests Build
+      - name: Run gradle tests
+        run: ./gradlew test
