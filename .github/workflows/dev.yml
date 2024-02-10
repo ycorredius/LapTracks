@@ -1,0 +1,34 @@
+name: Dev branch updates
+env:
+  main_project_module: Lap Tracks
+  playstore_name: Lap Tracks
+on:
+  workflow_dispatch:
+
+  push:
+    branches: ["dev"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+      - name: Setup Jdk
+        uses: actions/setup-java@v4.0.0
+        with:
+          distribution: "adopt"
+          java-version: "18"
+
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
+
+      # Run test suite in project
+      - name: Run gradle tests
+        run: ./gradlew test

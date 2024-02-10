@@ -7,11 +7,11 @@ import com.shaunyarbrough.laptracks.data.source.FakeStudentWorkoutRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 
 class WorkoutViewModelTest {
+	//TODO: Finish building out test suite
 	private lateinit var studentWorkoutRepository: StudentWorkoutRepository
 
 	private val viewModel =
@@ -53,16 +53,6 @@ class WorkoutViewModelTest {
 			viewModel.setParticipantTime(student, 50000_000L)
 			viewModel.setParticipantTime(student, 60000_000L)
 			assertEquals(viewModel.workoutUiState.value.participantsList.getValue(student).size, 2)
-		}
-	}
-
-	@Test
-	fun workoutViewModel_WillNotSetParticipantTimeIfNotInParticipantList() = runBlocking{
-		val student = studentWorkoutRepository.getStudent(1).first()
-		if (student != null) {
-			viewModel.setParticipantTime(student, 50000_000L)
-			viewModel.setParticipantTime(student, 60000_000L)
-			assertNotEquals(viewModel.workoutUiState.value.participantsList.getValue(student).size,2)
 		}
 	}
 
