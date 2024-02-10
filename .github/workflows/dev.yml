@@ -1,4 +1,4 @@
-name: Push to main
+name: Dev branch updates
 env:
   main_project_module: Lap Tracks
   playstore_name: Lap Tracks
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
   push:
-    branches: ["main"]
+    branches: ["dev"]
 
 jobs:
   build:
@@ -32,20 +32,3 @@ jobs:
       # Run test suite in project
       - name: Run gradle tests
         run: ./gradlew test
-
-      # Build Project
-      - name: Build gradle
-        run: ./gradlew build
-
-      # Create APK Debug
-      - name: Build apk debug project (APK) - ${{ env.main_project_module }} module
-        run: ./gradlew assembleDebug
-
-      - name: upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
-          serviceCredentialsFileContent: ${{ secrets.SERVICECREDENTIALSFILECONTENT }}
-          groups: testers
-          file: app/build/outputs/apk/debug/app-debug.apk
-        #TODO: Add release notes.
