@@ -9,7 +9,7 @@ on:
     branches: ["main"]
 
 jobs:
-  setup:
+  build_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.1.1
@@ -25,19 +25,15 @@ jobs:
         with:
           distribution: "adopt"
           java-version: "18"
-  test:
-    runs-on: ubuntu-latest
-    steps:
+
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
 
       # Run test suite in project
       - name: Run gradle tests
         run: ./gradlew test
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-        # Build Project
+
+      # Build Project
       - name: Build gradle
         run: ./gradlew build
 

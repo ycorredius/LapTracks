@@ -33,12 +33,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.Workout
-import com.shaunyarbrough.laptracks.ui.AppViewModelProvider
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.viewmodels.StudentListViewModel
 import com.shaunyarbrough.laptracks.ui.viewmodels.StudentUiModel
@@ -51,7 +50,7 @@ object StudentListDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentListScreen(
-  viewModel: StudentListViewModel = viewModel(factory = AppViewModelProvider.Factory),
+  viewModel: StudentListViewModel = hiltViewModel(),
   navigateToStudentDetails: (Int) -> Unit,
   navigateUp: () -> Unit,
   navigateToStudentEntry: () -> Unit

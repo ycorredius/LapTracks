@@ -31,11 +31,11 @@ android {
     }
   }
   compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_18
-    targetCompatibility = JavaVersion.VERSION_18
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
   }
   kotlinOptions {
-    jvmTarget = "18"
+    jvmTarget = "1.8"
   }
   buildFeatures {
     compose = true
@@ -65,23 +65,40 @@ dependencies {
   implementation("androidx.compose.material3:material3")
   implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
   implementation("androidx.navigation:navigation-compose:$nav_version")
+
+  //Room database dependencies
   implementation("androidx.room:room-runtime:${rootProject.extra["room_version"]}")
   ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
   implementation("androidx.room:room-ktx:${rootProject.extra["room_version"]}")
 
+  // Compose navhost dependencies
+  implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+
+  //Dagger hilt dependencies
   implementation("com.google.dagger:hilt-android:$hilt_version")
   kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-  implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
   kapt("androidx.hilt:hilt-compiler:1.1.0")
 
   //Firebase dependencies
   implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
   implementation("com.google.firebase:firebase-analytics")
 
+  //hilt testing dependencies - currently not in use.
   kaptTest("com.google.dagger:hilt-android-compiler:2.50")
   androidTestImplementation("com.google.dagger:hilt-android-testing:2.50")
   kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.50")
 
+  //Retrofit dependencies
+  // Retrofit
+  implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+  // Retrofit with Scalar Converter
+  implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+  //DataStore preferences
+  implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+  //Hilt dagger testing dependencies
   androidTestImplementation ("com.google.dagger:hilt-android-testing:2.50")
   androidTestAnnotationProcessor("com.google.dagger:hilt-compiler:2.50")
 

@@ -3,8 +3,8 @@ package com.shaunyarbrough.laptracks.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.shaunyarbrough.laptracks.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Workout
 import com.shaunyarbrough.laptracks.ui.views.ParticipantDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-  private val studentWorkoutRepository: StudentWorkoutRepository,
+	private val studentWorkoutRepository: StudentWorkoutRepository,
 ) : ViewModel() {
   companion object {
     private const val TIMEOUT_MILLIS = 5_000L

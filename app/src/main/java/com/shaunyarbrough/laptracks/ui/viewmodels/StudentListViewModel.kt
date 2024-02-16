@@ -5,12 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.StudentRepository
 import com.shaunyarbrough.laptracks.data.Workout
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class StudentListViewModel(studentRepository: StudentRepository): ViewModel() {
+@HiltViewModel
+class StudentListViewModel @Inject constructor(studentRepository: StudentRepository): ViewModel() {
   val studentListUiState: StateFlow<StudentListUiState> =
     studentRepository. getStudentsWithWorkoutsStream().map { StudentListUiState(mapToStudentUiModel(it)) }
       .stateIn(

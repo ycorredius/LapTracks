@@ -1,7 +1,7 @@
 package com.shaunyarbrough.laptracks.data.source
 
-import com.shaunyarbrough.laptracks.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Workout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

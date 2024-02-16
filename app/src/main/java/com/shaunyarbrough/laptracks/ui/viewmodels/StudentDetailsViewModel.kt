@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import com.shaunyarbrough.laptracks.data.StudentRepository
 import com.shaunyarbrough.laptracks.data.Workout
 import com.shaunyarbrough.laptracks.ui.views.StudentDetailsDestination
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class StudentDetailsViewModel(
+@HiltViewModel
+class StudentDetailsViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
   studentRepository: StudentRepository
 ) : ViewModel() {

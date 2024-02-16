@@ -1,8 +1,8 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
 import com.shaunyarbrough.laptracks.ServiceLocator
-import com.shaunyarbrough.laptracks.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.source.FakeStudentWorkoutRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

@@ -6,6 +6,7 @@ import com.shaunyarbrough.laptracks.data.AppDatabase
 import com.shaunyarbrough.laptracks.data.OfflineStudentRepository
 import com.shaunyarbrough.laptracks.data.OfflineWorkoutRepository
 import com.shaunyarbrough.laptracks.data.StudentRepository
+import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepositoryImpl
 import com.shaunyarbrough.laptracks.data.WorkoutRepository
 import kotlinx.coroutines.runBlocking

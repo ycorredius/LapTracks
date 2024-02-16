@@ -28,4 +28,9 @@
     <string name="no_students">Currently no students saved!</string>
     <string name="drop_down_button">Dropdown Button</string>
     <string name="drop_down_menu">Dropdown Menu</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="invalid_credentials">Invalid credentials</string>
+    <string name="welcome">Welcome Back!</string>
 </resources>
