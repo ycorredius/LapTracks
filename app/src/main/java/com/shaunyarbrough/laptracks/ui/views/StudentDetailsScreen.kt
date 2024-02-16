@@ -21,12 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.data.Workout
 import com.shaunyarbrough.laptracks.getLapTimeAverage
-import com.shaunyarbrough.laptracks.ui.AppViewModelProvider
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
 import com.shaunyarbrough.laptracks.ui.viewmodels.StudentDetails
@@ -42,7 +41,7 @@ object StudentDetailsDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentDetailsScreen(
-  viewModel: StudentDetailsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+  viewModel: StudentDetailsViewModel = hiltViewModel(),
   navigateUp: () -> Unit
 ) {
   val studentDetailsUiState by viewModel.studentDetailsUiState.collectAsState()
@@ -102,7 +101,9 @@ fun WorkoutItem(
   workout: Workout
 ) {
   Card(shape = MaterialTheme.shapes.extraSmall){
-    Row(modifier = Modifier.padding(10.dp).fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+    Row(modifier = Modifier
+      .padding(10.dp)
+      .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
       TableCell(text = workout.date, weight = 0.3f)
       TableCell(text = "${workout.lapList.size}", weight = 0.2f)
       TableCell(text = getLapTimeAverage(workout.lapList), weight = 0.3f)

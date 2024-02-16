@@ -4,13 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.shaunyarbrough.laptracks.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class StudentEntryViewModel(private val studentWorkoutRepository: StudentWorkoutRepository) : ViewModel(){
+@HiltViewModel
+class StudentEntryViewModel @Inject constructor(private val studentWorkoutRepository: StudentWorkoutRepository) : ViewModel(){
 
   var studentUiState by mutableStateOf(StudentUiState())
-    private set
+  private set
 
   fun updateUiState(studentDetails: StudentDetails){
     studentUiState = StudentUiState(studentDetails = studentDetails, isStudentValid = validateStudent(studentDetails))

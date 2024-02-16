@@ -23,10 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
-import com.shaunyarbrough.laptracks.ui.AppViewModelProvider
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
 import com.shaunyarbrough.laptracks.ui.viewmodels.StudentDetails
@@ -44,7 +43,7 @@ object StudentEntryDestination : NavigationDestination {
 fun StudentEntryScreen(
   navigateBack: () -> Unit,
   navigateUp: () -> Unit,
-  viewModel: StudentEntryViewModel = viewModel(factory = AppViewModelProvider.Factory)
+  viewModel: StudentEntryViewModel = hiltViewModel()
 ) {
   val coroutine = rememberCoroutineScope()
   Scaffold(
