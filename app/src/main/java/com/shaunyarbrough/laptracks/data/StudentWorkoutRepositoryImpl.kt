@@ -1,8 +1,9 @@
 package com.shaunyarbrough.laptracks.data
 
-import com.shaunyarbrough.laptracks.StudentWorkoutRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Singleton
 
+@Singleton
 class StudentWorkoutRepositoryImpl(private val studentRepository: StudentRepository, private val workoutRepository: WorkoutRepository):
 	StudentWorkoutRepository {
 	override fun getStudentsStream(): Flow<List<Student>>{

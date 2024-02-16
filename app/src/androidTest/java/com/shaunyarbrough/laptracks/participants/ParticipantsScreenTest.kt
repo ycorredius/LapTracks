@@ -11,8 +11,8 @@ import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
 import com.shaunyarbrough.laptracks.LapTrackApp
 import com.shaunyarbrough.laptracks.ServiceLocator
-import com.shaunyarbrough.laptracks.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.source.FakeStudentWorkoutRepository
 import com.shaunyarbrough.laptracks.ui.views.IntervalDestination
 import com.shaunyarbrough.laptracks.ui.views.ParticipantDestination
