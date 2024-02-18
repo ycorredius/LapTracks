@@ -7,4 +7,7 @@ import retrofit2.http.POST
 interface AuthService {
 	@POST("sign_in")
 	suspend fun loginUser(@Body body: Auth): Response<JWT>
+
+	@POST("signup")
+	suspend fun signupUser(@Body body: Auth): Response<JWT>
 }

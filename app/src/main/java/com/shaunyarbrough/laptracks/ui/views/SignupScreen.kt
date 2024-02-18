@@ -30,20 +30,19 @@ import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.viewmodels.AuthViewModel
 
-object LoginDestination : NavigationDestination {
-	override val route = "login"
-	override val titleRes = R.string.login
+object SignupDestination : NavigationDestination {
+	override val route = "signup"
+	override val titleRes = R.string.signup
 }
 
 @Composable
-fun LoginScreen(
+fun SignupScreen(
 	navController: NavController,
 	authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
-
 ) {
 	var hasError by remember { mutableStateOf(false) }
-	var email by remember {mutableStateOf("")}
-	var password by remember {mutableStateOf("")}
+	var email by remember { mutableStateOf("") }
+	var password by remember { mutableStateOf("") }
 
 	Column(
 		modifier = Modifier.fillMaxSize(),
@@ -52,7 +51,7 @@ fun LoginScreen(
 	) {
 		//todo: Add error messages
 		Text(
-			text = stringResource(id = R.string.welcome),
+			text = "Welcome!",
 			style = MaterialTheme.typography.titleMedium,
 			fontSize = 25.sp
 		)
@@ -69,14 +68,15 @@ fun LoginScreen(
 				value = password,
 				onValueChange = { password = it },
 				label = {
-					Text(stringResource(id = R.string.password))},
+					Text(stringResource(id = R.string.password))
+				},
 				visualTransformation = PasswordVisualTransformation(),
 				keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 			)
 		}
 		Button(
 			onClick = {
-				authViewModel.login(email, password, navController)
+				authViewModel.signup(email, password, navController)
 				if (authViewModel.authUiState.hasError) {
 					hasError = authViewModel.authUiState.hasError
 				}
@@ -86,12 +86,12 @@ fun LoginScreen(
 		) {
 			Text(stringResource(id = R.string.login))
 		}
-		Text(text = "Create an Account", modifier = Modifier.clickable { navController.navigate(SignupDestination.route) })
+		Text(text = "Already have an account?", modifier = Modifier.clickable { navController.navigate(LoginDestination.route) })
 	}
 }
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
-	LoginScreen(navController = rememberNavController())
+fun SignupScreenPreview() {
+	SignupScreen(navController = rememberNavController())
 }

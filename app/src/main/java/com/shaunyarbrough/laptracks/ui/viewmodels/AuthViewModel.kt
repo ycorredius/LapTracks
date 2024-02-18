@@ -19,33 +19,39 @@ class AuthViewModel @Inject constructor(
 	var authUiState by mutableStateOf(AuthUiState())
 		private set
 
-	fun login(navController: NavController) {
+	fun login(email: String, password: String, navController: NavController) {
 		viewModelScope.launch {
-			if (validateAuth()) {
-				val result = authRepository.loginUser(authUiState.auth.email, authUiState.auth.password)
+			if (validateAuth(email,password)) {
+				val result = authRepository.loginUser(email, password)
 				if (result.isSuccessful) {
 					navController.navigate(ParticipantDestination.route)
 				} else {
+					// Reconfigure this to set error message from api
+					authUiState.copy(hasError = !result.isSuccessful)
+				}
+			}
+		}
+	}
+	//There is currently no error state fully functional. Do this after signup completed.
+	fun signup(email: String, password: String, navController: NavController){
+		viewModelScope.launch {
+			if (validateAuth(email,password)){
+				val result = authRepository.signupUser(email,password)
+				if (result.isSuccessful){
+					navController.navigate(ParticipantDestination.route)
+				}else{
+					//Same as above reconfigure to set error message api call
 					authUiState.copy(hasError = !result.isSuccessful)
 				}
 			}
 		}
 	}
 
-	fun updateUiState(authDetails: AuthDetails, hasError: Boolean = authUiState.hasError){
-		authUiState = AuthUiState(auth = authDetails)
-	}
-	private fun validateAuth(authDetails: AuthDetails = authUiState.auth): Boolean {
-		return authDetails.email.isNotEmpty() && authDetails.password.isNotEmpty()
+	private fun validateAuth(email: String, password: String): Boolean {
+		return email.isNotEmpty() && password.isNotEmpty()
 	}
 
 	data class AuthUiState(
 		val hasError: Boolean = false,
-		val auth: AuthDetails = AuthDetails()
-	)
-
-	data class AuthDetails(
-		val email: String = "",
-		val password: String = ""
 	)
 }

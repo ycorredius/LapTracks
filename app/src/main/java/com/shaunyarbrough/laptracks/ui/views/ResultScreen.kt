@@ -71,7 +71,8 @@ fun ResultScreen(
 			},
 			modifier = Modifier.padding(innerPadding),
 			onResetClick = onResetClick,
-			onSaveClick = { viewModel.saveWorkout() }
+			onSaveClick = { viewModel.saveWorkout() },
+			interval = workoutUiState.interval
 		)
 	}
 }
@@ -85,6 +86,7 @@ private fun ResultBody(
 	onResetClick: () -> Unit,
 	onSaveClick: () -> Unit,
 	modifier: Modifier = Modifier,
+	interval: String
 ) {
 	Column(
 		modifier = modifier
@@ -128,7 +130,7 @@ private fun ResultBody(
 				)
 			}
 			Button(
-				onClick = { onSendEmailClick(currentDate, workout) },
+				onClick = { onSendEmailClick("$interval meters - $currentDate", workout) },
 				modifier = Modifier.fillMaxWidth()
 			) {
 				Text(
@@ -165,6 +167,7 @@ fun ResultScreenPreview() {
 		currentDate = "1234",
 		workout = "Testing",
 		onResetClick = {},
-		onSaveClick = {}
+		onSaveClick = {},
+		interval = "500"
 	)
 }

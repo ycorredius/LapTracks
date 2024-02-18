@@ -31,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.shaunyarbrough.laptracks.LapTrackAppBottomAppBar
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.data.Student
@@ -47,7 +49,8 @@ object ParticipantDestination : NavigationDestination {
 @Composable
 fun ParticipantScreen(
 	navigateToInterval: () -> Unit,
-	workoutViewModel: WorkoutViewModel
+	workoutViewModel: WorkoutViewModel,
+	navController: NavHostController
 ) {
 	val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 	val workoutUiState by workoutViewModel.workoutUiState.collectAsState()
@@ -60,6 +63,7 @@ fun ParticipantScreen(
 				scrollBehavior = scrollBehavior
 			)
 		},
+		bottomBar = { LapTrackAppBottomAppBar(navController =  navController ) }
 	) { innerPadding ->
 		Box(modifier = Modifier.padding(innerPadding)) {
 			ParticipantBody(
