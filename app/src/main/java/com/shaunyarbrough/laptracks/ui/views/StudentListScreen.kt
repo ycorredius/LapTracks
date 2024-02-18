@@ -34,6 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.shaunyarbrough.laptracks.LapTrackAppBottomAppBar
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.data.Student
@@ -53,7 +55,8 @@ fun StudentListScreen(
   viewModel: StudentListViewModel = hiltViewModel(),
   navigateToStudentDetails: (Int) -> Unit,
   navigateUp: () -> Unit,
-  navigateToStudentEntry: () -> Unit
+  navigateToStudentEntry: () -> Unit,
+  navController: NavHostController
 ) {
   val studentListUiState by viewModel.studentListUiState.collectAsState()
   val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -65,7 +68,7 @@ fun StudentListScreen(
         scrollBehavior = scrollBehavior,
         navigateUp = navigateUp
       )
-    },
+    }, bottomBar = { LapTrackAppBottomAppBar(navController = navController)}
   ) { innerPadding ->
     BoxWithConstraints(
       Modifier.padding(innerPadding),

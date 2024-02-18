@@ -38,8 +38,7 @@ import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.convertLongToString
 import com.shaunyarbrough.laptracks.data.Student
-import com.shaunyarbrough.laptracks.getLapTimeLong
-import com.shaunyarbrough.laptracks.getLapTimeString
+import com.shaunyarbrough.laptracks.getLastLapTimeString
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
 import com.shaunyarbrough.laptracks.ui.viewmodels.WorkoutViewModel
@@ -145,8 +144,8 @@ fun PracticeSummaryScreen(
 	val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 	LaunchedEffect(key1 = isTimerRunning, key2 = totalTime) {
 		if (isTimerRunning) {
-			delay(100)
-			totalTime += 100L
+			delay(1)
+			totalTime += 1000L
 		}
 	}
 
@@ -192,8 +191,8 @@ private fun ParticipantSummaryLazyColumn(
 	Column {
 		participants.forEach { participant ->
 			Card(
-				modifier = Modifier.clickable {
-					if (isEnabled) setParticipantTime(participant.key, getLapTimeLong(participant.value,totalTime))
+				modifier = Modifier.padding(0.dp,3.dp).clickable {
+					if (isEnabled) setParticipantTime(participant.key,totalTime)
 				},
 				colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
 				shape = MaterialTheme.shapes.extraSmall
@@ -214,7 +213,7 @@ private fun ParticipantSummaryLazyColumn(
 					}
 					Column {
 						Text(text = "Last lap")
-						Text(text = getLapTimeString(participant.value))
+						Text(text = getLastLapTimeString(participant.value))
 					}
 				}
 			}

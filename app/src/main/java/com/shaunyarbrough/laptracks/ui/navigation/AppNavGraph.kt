@@ -3,13 +3,10 @@ package com.shaunyarbrough.laptracks.ui.navigation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -17,7 +14,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.shaunyarbrough.laptracks.LapTrackAppBottomAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.ui.viewmodels.MainViewModel
 import com.shaunyarbrough.laptracks.ui.viewmodels.WorkoutViewModel
@@ -31,6 +27,8 @@ import com.shaunyarbrough.laptracks.ui.views.ParticipantSummaryDestination
 import com.shaunyarbrough.laptracks.ui.views.PracticeSummaryScreen
 import com.shaunyarbrough.laptracks.ui.views.ResultScreen
 import com.shaunyarbrough.laptracks.ui.views.ResultScreenDestination
+import com.shaunyarbrough.laptracks.ui.views.SignupDestination
+import com.shaunyarbrough.laptracks.ui.views.SignupScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentDetailsDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentDetailsScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentEntryDestination
@@ -41,15 +39,9 @@ import com.shaunyarbrough.laptracks.ui.views.StudentListScreen
 @Composable
 fun AppNavHost(
 	navController: NavHostController,
-	modifier: Modifier = Modifier,
 	mainViewModel: MainViewModel = hiltViewModel(),
 	viewModel: WorkoutViewModel = hiltViewModel()
 ) {
-	Scaffold(
-		bottomBar = {
-			LapTrackAppBottomAppBar(navController)
-		}
-	) { innerPadding ->
 		val currentDestination by mainViewModel.currentDestination.collectAsState()
 		val isLoading by mainViewModel.isLoading.collectAsState()
 		
@@ -59,15 +51,18 @@ fun AppNavHost(
 			NavHost(
 				navController = navController,
 				startDestination = currentDestination,
-				modifier = modifier.padding(innerPadding)
 			) {
 				composable(route = LoginDestination.route) {
 					LoginScreen(navController)
 				}
+				composable(route = SignupDestination.route){
+					SignupScreen(navController = navController)
+				}
 				composable(route = ParticipantDestination.route) {
 					ParticipantScreen(
 						navigateToInterval = { navController.navigate(IntervalDestination.route) },
-						workoutViewModel = viewModel
+						workoutViewModel = viewModel,
+						navController
 					)
 				}
 
@@ -118,6 +113,7 @@ fun AppNavHost(
 							navController.navigate("${StudentDetailsDestination.route}/${it}")
 						},
 						navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
+						navController = navController
 					)
 				}
 
@@ -131,7 +127,6 @@ fun AppNavHost(
 				}
 			}
 		}
-	}
 }
 
 //Save in case we change our mind on whether or not to use it.

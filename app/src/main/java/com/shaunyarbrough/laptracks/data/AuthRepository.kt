@@ -28,6 +28,14 @@ class AuthRepository @Inject constructor(
 		return response
 	}
 
+	suspend fun signupUser(email: String, password: String): Response<JWT>{
+		val response = authService.signupUser(Auth(email, password))
+		if(response.isSuccessful){
+			response.body()?.token?.let { updateJWT(it) }
+		}
+		return response
+	}
+
 	private suspend fun updateJWT(jwt: String){
 		dataStore.edit {
 			preferences ->
