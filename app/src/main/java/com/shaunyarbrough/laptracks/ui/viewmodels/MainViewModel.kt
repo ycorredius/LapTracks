@@ -46,10 +46,12 @@ class MainViewModel @Inject constructor(
 	}
 
 	private fun updateDestination(){
-		_currentDestination.value = if (accessToken.value.isNotEmpty()){
-			ParticipantDestination.route
-		} else{
-			LoginDestination.route
-		}
+		_currentDestination.value = ParticipantDestination.route
+		//Until I have server issue figured out default to participant route.
+//			if (accessToken.value.isNotEmpty()){
+//			ParticipantDestination.route
+//		} else{
+//			LoginDestination.route
+//		}
 	}
 }
