@@ -31,6 +31,8 @@ import com.shaunyarbrough.laptracks.ui.views.SignupDestination
 import com.shaunyarbrough.laptracks.ui.views.SignupScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentDetailsDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentDetailsScreen
+import com.shaunyarbrough.laptracks.ui.views.StudentEditDestination
+import com.shaunyarbrough.laptracks.ui.views.StudentEditScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentEntryDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentEntryScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentListDestination
@@ -42,91 +44,99 @@ fun AppNavHost(
 	mainViewModel: MainViewModel = hiltViewModel(),
 	viewModel: WorkoutViewModel = hiltViewModel()
 ) {
-		val currentDestination by mainViewModel.currentDestination.collectAsState()
-		val isLoading by mainViewModel.isLoading.collectAsState()
-		
-		if(isLoading){
-			Text(text = "Loading")
-		}else {
-			NavHost(
-				navController = navController,
-				startDestination = currentDestination,
+	val currentDestination by mainViewModel.currentDestination.collectAsState()
+	val isLoading by mainViewModel.isLoading.collectAsState()
+
+	if (isLoading) {
+		Text(text = "Loading")
+	} else {
+		NavHost(
+			navController = navController,
+			startDestination = currentDestination,
+		) {
+			composable(route = LoginDestination.route) {
+				LoginScreen(navController)
+			}
+			composable(route = SignupDestination.route) {
+				SignupScreen(navController = navController)
+			}
+			composable(route = ParticipantDestination.route) {
+				ParticipantScreen(
+					navigateToInterval = { navController.navigate(IntervalDestination.route) },
+					workoutViewModel = viewModel,
+					navController
+				)
+			}
+			composable(route = StudentEntryDestination.route) {
+				StudentEntryScreen(
+					navigateUp = { navController.navigateUp() },
+					navigateBack = { navController.popBackStack() },
+				)
+			}
+			composable(route = IntervalDestination.route) {
+				IntervalScreen(
+					navigateToParticipantSummary = {
+						navController.navigate(
+							ParticipantSummaryDestination.route
+						)
+					},
+					navigateUp = { navController.navigateUp() },
+					onCancelClick = { viewModel.onCancelClick(navController) },
+					viewModel = viewModel
+				)
+			}
+			composable(route = ParticipantSummaryDestination.route) {
+				PracticeSummaryScreen(
+					navigateUp = { navController.navigateUp() },
+					onFinishClick = { navController.navigate(ResultScreenDestination.route) },
+					workoutViewModel = viewModel
+				)
+			}
+			composable(route = ResultScreenDestination.route) {
+				val context = LocalContext.current
+				ResultScreen(
+					viewModel = viewModel,
+					navigateUp = { navController.navigateUp() },
+					onSendEmailClick = { subject: String, workout: String ->
+						composeEmail(context, subject = subject, bodyText = workout)
+					},
+					onResetClick = { viewModel.onCancelClick(navController) }
+				)
+			}
+			composable(route = StudentListDestination.route) {
+				StudentListScreen(
+					navigateUp = { navController.navigateUp() },
+					navigateToStudentDetails = {
+						navController.navigate("${StudentDetailsDestination.route}/${it}")
+					},
+					navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
+					navController = navController
+				)
+			}
+			composable(
+				route = StudentEditDestination.routeWithArg,
+				arguments = listOf(navArgument(StudentEditDestination.studentIdArg) {
+					type = NavType.IntType
+				})
 			) {
-				composable(route = LoginDestination.route) {
-					LoginScreen(navController)
-				}
-				composable(route = SignupDestination.route){
-					SignupScreen(navController = navController)
-				}
-				composable(route = ParticipantDestination.route) {
-					ParticipantScreen(
-						navigateToInterval = { navController.navigate(IntervalDestination.route) },
-						workoutViewModel = viewModel,
-						navController
-					)
-				}
-
-				composable(route = StudentEntryDestination.route) {
-					StudentEntryScreen(
-						navigateUp = { navController.navigateUp() },
-						navigateBack = { navController.popBackStack() },
-					)
-				}
-
-				composable(route = IntervalDestination.route) {
-					IntervalScreen(
-						navigateToParticipantSummary = {
-							navController.navigate(
-								ParticipantSummaryDestination.route
-							)
-						},
-						navigateUp = { navController.navigateUp() },
-						onCancelClick = { viewModel.onCancelClick(navController) },
-						viewModel = viewModel
-					)
-				}
-
-				composable(route = ParticipantSummaryDestination.route) {
-					PracticeSummaryScreen(
-						navigateUp = { navController.navigateUp() },
-						onFinishClick = { navController.navigate(ResultScreenDestination.route) },
-						workoutViewModel = viewModel
-					)
-				}
-				composable(route = ResultScreenDestination.route) {
-					val context = LocalContext.current
-
-					ResultScreen(
-						viewModel = viewModel,
-						navigateUp = { navController.navigateUp() },
-						onSendEmailClick = { subject: String, workout: String ->
-							composeEmail(context, subject = subject, bodyText = workout)
-						},
-						onResetClick = { viewModel.onCancelClick(navController) }
-					)
-				}
-
-				composable(route = StudentListDestination.route) {
-					StudentListScreen(
-						navigateUp = { navController.navigateUp() },
-						navigateToStudentDetails = {
-							navController.navigate("${StudentDetailsDestination.route}/${it}")
-						},
-						navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
-						navController = navController
-					)
-				}
-
-				composable(
-					route = StudentDetailsDestination.routeWithArg,
-					arguments = listOf(navArgument(StudentDetailsDestination.studentIdArg) {
-						type = NavType.IntType
-					})
-				) {
-					StudentDetailsScreen(navigateUp = { navController.navigateUp() })
-				}
+				StudentEditScreen(
+					navigateUp = { navController.navigateUp() },
+					navigateToStudentList = {navController.navigate(StudentListDestination.route)}
+				)
+			}
+			composable(
+				route = StudentDetailsDestination.routeWithArg,
+				arguments = listOf(navArgument(StudentDetailsDestination.studentIdArg) {
+					type = NavType.IntType
+				})
+			) {
+				StudentDetailsScreen(
+					navigateUp = { navController.navigateUp() },
+					navigateToStudentEdit = {
+						navController.navigate("${StudentEditDestination.route}/$it") })
 			}
 		}
+	}
 }
 
 //Save in case we change our mind on whether or not to use it.

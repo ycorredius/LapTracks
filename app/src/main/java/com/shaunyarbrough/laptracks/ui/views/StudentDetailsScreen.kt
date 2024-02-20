@@ -8,9 +8,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -42,6 +46,7 @@ object StudentDetailsDestination : NavigationDestination {
 @Composable
 fun StudentDetailsScreen(
   viewModel: StudentDetailsViewModel = hiltViewModel(),
+  navigateToStudentEdit: (Int) -> Unit,
   navigateUp: () -> Unit
 ) {
   val studentDetailsUiState by viewModel.studentDetailsUiState.collectAsState()
@@ -53,6 +58,11 @@ fun StudentDetailsScreen(
         canNavigateBack = true,
         navigateUp = navigateUp
       )
+    },
+    floatingActionButton = {
+      FloatingActionButton(onClick = { navigateToStudentEdit(studentDetailsUiState.studentDetails.id)}) {
+        Icon(Icons.Filled.Edit, contentDescription = "Edit button" )
+      }
     }
   ) { innerPadding ->
 
