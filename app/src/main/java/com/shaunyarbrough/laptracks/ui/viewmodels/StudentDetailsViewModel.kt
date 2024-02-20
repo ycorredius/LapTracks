@@ -1,5 +1,6 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StudentDetailsViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
-  studentRepository: StudentRepository
+  private val studentRepository: StudentRepository
 ) : ViewModel() {
   private val studentId: Int =
     checkNotNull(savedStateHandle[StudentDetailsDestination.studentIdArg])
@@ -26,22 +27,30 @@ class StudentDetailsViewModel @Inject constructor(
     studentRepository.loadStudentWithWorkouts(studentId)
       .filterNotNull()
       .map {
-        if(it.values.isNotEmpty()) {
+        try {
+          val value = it.values.first()
+          val workoutDetails = if(value.isNullOrEmpty()) value else null
           StudentDetailsUiState(
             studentDetails = it.keys.first().toStudentDetails(),
-            workoutDetails = it.values.first()
+            workoutDetails = workoutDetails
           )
-        }else{
-          StudentDetailsUiState(
-            studentDetails = it.keys.first().toStudentDetails()
-          )
+        } catch (e: NoSuchElementException){
+          Log.d("StudentDetailsViewModel", "$it")
+          StudentDetailsUiState()
         }
-      }.stateIn(
+      }
+      .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = StudentDetailsUiState()
       )
+
+  suspend fun removeUser(){
+    studentRepository.deleteStudent(studentDetailsUiState.value.studentDetails.toStudent())
+  }
 }
+
+
 
 data class StudentDetailsUiState(
   val studentDetails: StudentDetails = StudentDetails(),

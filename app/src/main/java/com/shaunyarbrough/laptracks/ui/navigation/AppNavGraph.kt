@@ -133,7 +133,8 @@ fun AppNavHost(
 				StudentDetailsScreen(
 					navigateUp = { navController.navigateUp() },
 					navigateToStudentEdit = {
-						navController.navigate("${StudentEditDestination.route}/$it") })
+						navController.navigate("${StudentEditDestination.route}/$it") },
+					navigateToStudentList = {navController.popBackStack()})
 			}
 		}
 	}
