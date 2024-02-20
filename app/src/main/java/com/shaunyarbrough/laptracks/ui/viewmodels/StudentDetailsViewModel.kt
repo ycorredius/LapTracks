@@ -10,6 +10,7 @@ import com.shaunyarbrough.laptracks.ui.views.StudentDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -27,17 +28,18 @@ class StudentDetailsViewModel @Inject constructor(
     studentRepository.loadStudentWithWorkouts(studentId)
       .filterNotNull()
       .map {
-        try {
-          val value = it.values.first()
-          val workoutDetails = if(value.isNullOrEmpty()) value else null
+        if(it.values.isNotEmpty()) {
           StudentDetailsUiState(
             studentDetails = it.keys.first().toStudentDetails(),
-            workoutDetails = workoutDetails
+            workoutDetails = it.values.first()
           )
-        } catch (e: NoSuchElementException){
-          Log.d("StudentDetailsViewModel", "$it")
-          StudentDetailsUiState()
+        }else{
+          StudentDetailsUiState(
+            studentDetails = it.keys.first().toStudentDetails()
+          )
         }
+      }.catch {
+        Log.d("StudentDetailsViewModel", "$it")
       }
       .stateIn(
         scope = viewModelScope,
