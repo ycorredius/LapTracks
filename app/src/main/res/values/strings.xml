@@ -35,4 +35,7 @@
     <string name="invalid_credentials">Invalid credentials</string>
     <string name="welcome">Welcome Back!</string>
     <string name="signup">Signup</string>
+    <string name="workout_details">Workout Details</string>
+    <string name="splash_screen">Splash Screen</string>
+    <string name="password_confirmation">Password Confirmation</string>
 </resources>

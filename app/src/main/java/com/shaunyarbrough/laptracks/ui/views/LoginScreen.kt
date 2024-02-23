@@ -24,11 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
-import com.shaunyarbrough.laptracks.ui.viewmodels.AuthViewModel
+import com.shaunyarbrough.laptracks.ui.viewmodels.LoginViewModel
 
 object LoginDestination : NavigationDestination {
 	override val route = "login"
@@ -37,9 +35,8 @@ object LoginDestination : NavigationDestination {
 
 @Composable
 fun LoginScreen(
-	navController: NavController,
-	authViewModel: AuthViewModel = hiltViewModel<AuthViewModel>(),
-
+	loginViewModel: LoginViewModel = hiltViewModel(),
+	openAndPopUp: (String,String) -> Unit
 ) {
 	var hasError by remember { mutableStateOf(false) }
 	var email by remember {mutableStateOf("")}
@@ -76,22 +73,19 @@ fun LoginScreen(
 		}
 		Button(
 			onClick = {
-				authViewModel.login(email, password, navController)
-				if (authViewModel.authUiState.hasError) {
-					hasError = authViewModel.authUiState.hasError
-				}
+				loginViewModel.onSignInClick(openAndPopUp,email,password)
 			},
 			modifier = Modifier.fillMaxWidth(.72f),
 			shape = MaterialTheme.shapes.extraSmall,
 		) {
 			Text(stringResource(id = R.string.login))
 		}
-		Text(text = "Create an Account", modifier = Modifier.clickable { navController.navigate(SignupDestination.route) })
+		Text(text = "Create an Account", modifier = Modifier.clickable { loginViewModel.onSignUpClick(openAndPopUp) })
 	}
 }
 
 @Preview
 @Composable
 fun LoginScreenPreview() {
-	LoginScreen(navController = rememberNavController())
+	LoginScreen(openAndPopUp = {_,_ ->})
 }

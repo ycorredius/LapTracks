@@ -82,6 +82,7 @@ dependencies {
   //Firebase dependencies
   implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
   implementation("com.google.firebase:firebase-analytics")
+  implementation("com.google.firebase:firebase-auth")
 
   //hilt testing dependencies - currently not in use.
   kaptTest("com.google.dagger:hilt-android-compiler:2.50")
