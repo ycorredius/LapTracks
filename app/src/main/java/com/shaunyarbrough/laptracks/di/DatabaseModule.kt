@@ -99,6 +99,6 @@ object DatabaseModule {
 
   @Provides
   fun provideAccountService(accountService: AccountServiceImpl): AccountService {
-    return AccountServiceImpl()
+    return accountService
   }
 }
