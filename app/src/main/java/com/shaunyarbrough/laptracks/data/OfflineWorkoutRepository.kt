@@ -8,4 +8,5 @@ class OfflineWorkoutRepository @Inject constructor(private val workoutDao: Worko
 
   override suspend fun insertWorkout(workout: Workout) = workoutDao.workoutInserts(workout)
 
+  override fun getWorkoutWithStudent(id: Int): Flow<WorkoutWithStudent> = workoutDao.getWorkoutWithStudent(id)
 }

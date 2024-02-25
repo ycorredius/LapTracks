@@ -1,5 +1,6 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,6 +10,7 @@ import com.shaunyarbrough.laptracks.ui.views.StudentDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -17,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StudentDetailsViewModel @Inject constructor(
   savedStateHandle: SavedStateHandle,
-  studentRepository: StudentRepository
+  private val studentRepository: StudentRepository
 ) : ViewModel() {
   private val studentId: Int =
     checkNotNull(savedStateHandle[StudentDetailsDestination.studentIdArg])
@@ -36,12 +38,21 @@ class StudentDetailsViewModel @Inject constructor(
             studentDetails = it.keys.first().toStudentDetails()
           )
         }
-      }.stateIn(
+      }.catch {
+        Log.d("StudentDetailsViewModel", "$it")
+      }
+      .stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000L),
         initialValue = StudentDetailsUiState()
       )
+
+  suspend fun removeUser(){
+    studentRepository.deleteStudent(studentDetailsUiState.value.studentDetails.toStudent())
+  }
 }
+
+
 
 data class StudentDetailsUiState(
   val studentDetails: StudentDetails = StudentDetails(),

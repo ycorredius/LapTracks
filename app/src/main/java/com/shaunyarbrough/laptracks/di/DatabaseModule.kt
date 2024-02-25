@@ -19,6 +19,8 @@ import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepositoryImpl
 import com.shaunyarbrough.laptracks.data.WorkoutDao
 import com.shaunyarbrough.laptracks.data.WorkoutRepository
+import com.shaunyarbrough.laptracks.service.AccountService
+import com.shaunyarbrough.laptracks.service.impl.AccountServiceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -93,5 +95,10 @@ object DatabaseModule {
   @Provides
   fun provideAuthService(retrofit: Retrofit): AuthService{
       return retrofit.create(AuthService::class.java)
+  }
+
+  @Provides
+  fun provideAccountService(accountService: AccountServiceImpl): AccountService {
+    return accountService
   }
 }
