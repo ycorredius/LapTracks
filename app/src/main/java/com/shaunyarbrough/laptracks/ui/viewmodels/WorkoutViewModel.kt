@@ -83,6 +83,12 @@ class WorkoutViewModel @Inject constructor(
     }
   }
 
+  fun updateTotalTime(totalTime: Long){
+    _uiState.update {
+      it.copy(totalTime = totalTime)
+    }
+  }
+
 //  fun launchTime(isTimerRunning: Boolean){
 //    viewModelScope.launch {
 //      if (isTimerRunning) {
@@ -110,7 +116,7 @@ fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, inte
 data class WorkoutUiState(
   val participantsList: Map<Student, List<Long>> = mapOf(),
   val interval: String = "",
-  val date: String = SimpleDateFormat("dd-MM-yyyy").format(Date()),
+  val date: String = SimpleDateFormat("MM-dd-yyyy").format(Date()),
   val totalTime: Long = 0L
 )
 

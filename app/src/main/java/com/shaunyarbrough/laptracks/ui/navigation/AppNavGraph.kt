@@ -35,6 +35,8 @@ import com.shaunyarbrough.laptracks.ui.views.StudentEntryDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentEntryScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentListDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentListScreen
+import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsDestination
+import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsScreen
 
 @Composable
 fun AppNavHost(
@@ -126,6 +128,16 @@ fun AppNavHost(
 			)
 		}
 		composable(
+			WorkoutDetailsDestination.routeWithArgs,
+			arguments = listOf(navArgument(WorkoutDetailsDestination.workoutIdArgs) {
+				type = NavType.IntType
+			})
+		) {
+			WorkoutDetailsScreen(
+				navigateUp = { navController.navigateUp()}
+			)
+		}
+		composable(
 			route = StudentDetailsDestination.routeWithArg,
 			arguments = listOf(navArgument(StudentDetailsDestination.studentIdArg) {
 				type = NavType.IntType
@@ -136,11 +148,11 @@ fun AppNavHost(
 				navigateToStudentEdit = {
 					navController.navigate("${StudentEditDestination.route}/$it")
 				},
-				navigateToStudentList = { navController.popBackStack() })
+				navigateToStudentList = { navController.popBackStack() },
+				navigateToWorkoutDetails = { navController.navigate("${WorkoutDetailsDestination.route}/$it") }
+			)
 		}
 	}
-
-
 }
 
 private fun openAndPopUp(navController: NavHostController, route: String, popUp: String) {

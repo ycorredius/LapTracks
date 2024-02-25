@@ -59,7 +59,8 @@ fun StudentDetailsScreen(
 	viewModel: StudentDetailsViewModel = hiltViewModel(),
 	navigateToStudentEdit: (Int) -> Unit,
 	navigateUp: () -> Unit,
-	navigateToStudentList: () -> Unit
+	navigateToStudentList: () -> Unit,
+	navigateToWorkoutDetails: (Int) -> Unit
 ) {
 	val studentDetailsUiState by viewModel.studentDetailsUiState.collectAsState()
 
@@ -87,7 +88,8 @@ fun StudentDetailsScreen(
 					viewModel.removeUser()
 				}
 			},
-			navigateToStudentList = navigateToStudentList
+			navigateToStudentList = navigateToStudentList,
+			navigateToWorkoutDetails = navigateToWorkoutDetails
 		)
 	}
 }
@@ -98,7 +100,8 @@ fun StudentDetailsBody(
 	workouts: List<Workout>?,
 	onConfirmation: () -> Unit,
 	navigateToStudentList: () -> Unit,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	navigateToWorkoutDetails: (Int) -> Unit
 ) {
 	var dialogOpen by remember { mutableStateOf(false) }
 	when {
@@ -138,7 +141,8 @@ fun StudentDetailsBody(
 						}
 					}
 					items(workouts) { workout ->
-						WorkoutItem(workout)
+						WorkoutItem(workout,
+							navigateToWorkoutDetails)
 					}
 				}
 			} else {
@@ -150,9 +154,10 @@ fun StudentDetailsBody(
 
 @Composable
 fun WorkoutItem(
-	workout: Workout
+	workout: Workout,
+	navigateToWorkoutDetails: (Int) -> Unit
 ) {
-	Card(shape = MaterialTheme.shapes.extraSmall, modifier = Modifier.clickable { }) {
+	Card(shape = MaterialTheme.shapes.extraSmall, modifier = Modifier.clickable { navigateToWorkoutDetails(workout.id)}) {
 		Row(
 			modifier = Modifier
 				.padding(10.dp)
@@ -239,7 +244,8 @@ fun StudentDetailsPreview() {
 			),
 			workouts = emptyList(),
 			onConfirmation = {},
-			navigateToStudentList = {}
+			navigateToStudentList = {},
+			navigateToWorkoutDetails = { }
 		)
 	}
 }

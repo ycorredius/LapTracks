@@ -23,16 +23,51 @@ fun formatResults(participantTimes: Map<Student, List<Long>>): String {
 
 fun getLapTimeAverage(laps: List<Long>): String {
 	var result = 0L
-	laps.forEachIndexed { index, value ->
-		result += if (index == 0) {
-			value
+	return if (laps.isEmpty()) {
+		"00:00.00"
+	} else {
+		laps.forEachIndexed { index, value ->
+			result += if (index == 0) {
+				value
+			} else {
+				(value - laps[index - 1])
+			}
+		}
+		result /= laps.size
+		convertLongToString(result)
+	}
+}
+
+fun getFastestLap(laps: List<Long>): String {
+	if (laps.isEmpty()) return "00:00.00"
+
+	var fastestLap: Long = 5000000000_00L
+	laps.forEachIndexed { index, l ->
+		if (index == 0) {
+			fastestLap = l
 		} else {
-			(value - laps[index - 1])
+			val time = l - laps[index - 1]
+			if (time < fastestLap) {
+				fastestLap = time
+			}
 		}
 	}
+	return convertLongToString(fastestLap)
+}
 
-	result /= laps.size
-	return convertLongToString(result)
+fun getSlowestLap(laps: List<Long>): String {
+	if (laps.isEmpty()) return "00:00.00"
+
+	var slowest: Long = 0L
+	laps.forEachIndexed { index, l ->
+		if (index == 0) {
+			slowest = l
+		} else {
+			val time = l - laps[index - 1]
+			if (time > slowest) slowest = time
+		}
+	}
+	return convertLongToString(slowest)
 }
 
 fun getLastLapTimeString(laps: List<Long>): String {

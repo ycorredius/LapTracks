@@ -6,4 +6,6 @@ interface WorkoutRepository {
   fun getWorkouts(): Flow<List<Workout>?>
 
   suspend fun insertWorkout(workout: Workout)
+
+  fun getWorkoutWithStudent(id: Int): Flow<WorkoutWithStudent>
 }
