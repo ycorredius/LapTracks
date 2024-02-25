@@ -78,7 +78,6 @@ fun WorkoutDetailsBody(
 	workoutDetails: WorkoutDetails,
 	studentDetails: StudentDetails
 ) {
-	val averageLapTime: String = getLapTimeAverage(workoutDetails.lapList)
 	Column(modifier = Modifier
 		.fillMaxSize()
 		.padding(10.dp)) {
