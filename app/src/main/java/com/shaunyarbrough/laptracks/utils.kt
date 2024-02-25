@@ -41,7 +41,7 @@ fun getLapTimeAverage(laps: List<Long>): String {
 fun getFastestLap(laps: List<Long>): String {
 	if (laps.isEmpty()) return "00:00.00"
 
-	var fastestLap: Long = 5000000000_00L
+	var fastestLap = 5000000000_00L
 	laps.forEachIndexed { index, l ->
 		if (index == 0) {
 			fastestLap = l
@@ -58,7 +58,7 @@ fun getFastestLap(laps: List<Long>): String {
 fun getSlowestLap(laps: List<Long>): String {
 	if (laps.isEmpty()) return "00:00.00"
 
-	var slowest: Long = 0L
+	var slowest = 0L
 	laps.forEachIndexed { index, l ->
 		if (index == 0) {
 			slowest = l
