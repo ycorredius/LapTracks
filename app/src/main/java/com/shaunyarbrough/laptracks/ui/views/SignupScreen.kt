@@ -38,7 +38,7 @@ object SignupDestination : NavigationDestination {
 @Composable
 fun SignupScreen(
 	openAndPopUp: (String, String) -> Unit,
-	viewModel: SignUpViewModel = hiltViewModel(),
+	viewModel: SignUpViewModel = hiltViewModel<SignUpViewModel>(),
 ) {
 	val hasError = viewModel.isError.collectAsState()
 	var email by remember { mutableStateOf("") }

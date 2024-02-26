@@ -3,6 +3,7 @@ package com.shaunyarbrough.laptracks.data.source
 import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Workout
+import com.shaunyarbrough.laptracks.data.WorkoutWithStudent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -44,5 +45,9 @@ class FakeStudentWorkoutRepository: StudentWorkoutRepository {
 
 	override suspend fun insertWorkout(workout: Workout) {
 		workouts.add(workout)
+	}
+
+	override fun getWorkoutWithStudent(id: Int): Flow<WorkoutWithStudent> {
+		TODO("Not yet implemented")
 	}
 }
