@@ -77,7 +77,9 @@ dependencies {
   //Dagger hilt dependencies
   implementation("com.google.dagger:hilt-android:$hilt_version")
   kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-  kapt("androidx.hilt:hilt-compiler:1.1.0")
+  kapt("androidx.hilt:hilt-compiler:1.2.0")
+  annotationProcessor("com.google.dagger:hilt-compiler:2.50")
+  kapt("com.google.dagger:hilt-compiler:2.50")
 
   //Firebase dependencies
   implementation(platform("com.google.firebase:firebase-bom:32.7.1"))

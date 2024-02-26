@@ -35,7 +35,7 @@ object LoginDestination : NavigationDestination {
 
 @Composable
 fun LoginScreen(
-	loginViewModel: LoginViewModel = hiltViewModel(),
+	loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>(),
 	openAndPopUp: (String,String) -> Unit
 ) {
 	var hasError by remember { mutableStateOf(false) }
