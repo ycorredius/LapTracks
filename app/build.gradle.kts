@@ -15,8 +15,8 @@ android {
     applicationId = "com.shaunyarbrough.laptracks"
     minSdk = 24
     targetSdk = 34
-    versionCode = 4
-    versionName = "1.0.3"
+    versionCode = 5
+    versionName = "1.1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     vectorDrawables {
@@ -77,11 +77,14 @@ dependencies {
   //Dagger hilt dependencies
   implementation("com.google.dagger:hilt-android:$hilt_version")
   kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
-  kapt("androidx.hilt:hilt-compiler:1.1.0")
+  kapt("androidx.hilt:hilt-compiler:1.2.0")
+  annotationProcessor("com.google.dagger:hilt-compiler:2.50")
+  kapt("com.google.dagger:hilt-compiler:2.50")
 
   //Firebase dependencies
   implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
   implementation("com.google.firebase:firebase-analytics")
+  implementation("com.google.firebase:firebase-auth")
 
   //hilt testing dependencies - currently not in use.
   kaptTest("com.google.dagger:hilt-android-compiler:2.50")

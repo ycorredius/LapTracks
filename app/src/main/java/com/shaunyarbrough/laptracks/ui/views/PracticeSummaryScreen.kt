@@ -60,6 +60,7 @@ fun PracticeSummaryBody(
 	totalTime: Long,
 	isEnabled: Boolean,
 	isTimerRunning: Boolean,
+	updateTotalTime: (Long) -> Unit,
 	onStartClick: () -> Unit,
 	onFinishClick: () -> Unit,
 ) {
@@ -101,13 +102,18 @@ fun PracticeSummaryBody(
 				Button(
 					onClick = {
 						onStartClick()
+						if (isTimerRunning) updateTotalTime(totalTime)
 					},
 					modifier = Modifier.weight(0.3f)
 				) {
-					if (isTimerRunning) Text(text = "Pause") else Text(
-						text = stringResource(id = R.string.start),
-						fontSize = dimensionResource(id = R.dimen.button_font).value.sp
-					)
+					if (isTimerRunning) {
+						Text(text = "Pause")
+					} else {
+						Text(
+							text = stringResource(id = R.string.start),
+							fontSize = dimensionResource(id = R.dimen.button_font).value.sp
+						)
+					}
 				}
 				Spacer(modifier = Modifier.weight(0.1f))
 				Button(
@@ -176,6 +182,7 @@ fun PracticeSummaryScreen(
 					isEnabled = !isEnabled
 				},
 				onFinishClick = onFinishClick,
+				updateTotalTime = { workoutViewModel.updateTotalTime(it) }
 			)
 		}
 	}
@@ -191,9 +198,11 @@ private fun ParticipantSummaryLazyColumn(
 	Column {
 		participants.forEach { participant ->
 			Card(
-				modifier = Modifier.padding(0.dp,3.dp).clickable {
-					if (isEnabled) setParticipantTime(participant.key,totalTime)
-				},
+				modifier = Modifier
+					.padding(0.dp, 3.dp)
+					.clickable {
+						if (isEnabled) setParticipantTime(participant.key, totalTime)
+					},
 				colors = CardDefaults.cardColors(MaterialTheme.colorScheme.secondaryContainer),
 				shape = MaterialTheme.shapes.extraSmall
 			) {
@@ -242,6 +251,7 @@ fun PracticeSummaryScreenPreview() {
 			setParticipantTime = { _, _ -> },
 			totalTime = 5_000L,
 			onFinishClick = {},
+			updateTotalTime = {}
 		)
 	}
 }
