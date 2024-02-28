@@ -17,13 +17,9 @@ class SignUpViewModel @Inject constructor(
 	fun onSignUpClick(
 		openAndPopUp: (String, String) -> Unit,
 		email: String, password: String,
-		passwordConfirmation: String
 	) {
 		launchCatching {
 			//TODO: Figure out a better way to handle auth error. This works for now
-			if (password != passwordConfirmation){
-				throw Exception("Passwords do not match")
-			}
 				accountService.signUp(email,password)
 			if (accountService.hasUser()) {
 				openAndPopUp(ParticipantDestination.route, SignupDestination.route)
