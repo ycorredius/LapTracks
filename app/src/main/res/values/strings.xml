@@ -39,4 +39,7 @@
     <string name="workout_details">Workout Details</string>
     <string name="splash_screen">Splash Screen</string>
     <string name="password_confirmation">Password Confirmation</string>
+    <string name="team_create">Create your Team</string>
+    <string name="teams">Your Teams</string>
+    <string name="no_teams">No Teams available</string>
 </resources>

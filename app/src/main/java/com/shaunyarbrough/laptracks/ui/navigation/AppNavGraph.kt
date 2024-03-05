@@ -35,6 +35,10 @@ import com.shaunyarbrough.laptracks.ui.views.StudentEntryDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentEntryScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentListDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentListScreen
+import com.shaunyarbrough.laptracks.ui.views.TeamCreateDestination
+import com.shaunyarbrough.laptracks.ui.views.TeamCreateScreen
+import com.shaunyarbrough.laptracks.ui.views.TeamsDestination
+import com.shaunyarbrough.laptracks.ui.views.TeamsScreen
 import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsDestination
 import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsScreen
 
@@ -62,6 +66,16 @@ fun AppNavHost(
 				route, popUp ->
 				openAndPopUp(navController,route,popUp)
 			})
+		}
+		composable(TeamsDestination.route){
+			TeamsScreen(
+				navigateToTeamEntry = {navController.navigate(TeamCreateDestination.route)}
+			)
+		}
+		composable(TeamCreateDestination.route){
+			TeamCreateScreen(
+				navigateToTeams = {navController.navigate(TeamsDestination.route)}
+			)
 		}
 		composable(route = ParticipantDestination.route) {
 			ParticipantScreen(

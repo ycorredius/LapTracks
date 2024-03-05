@@ -20,7 +20,9 @@ import com.shaunyarbrough.laptracks.data.StudentWorkoutRepositoryImpl
 import com.shaunyarbrough.laptracks.data.WorkoutDao
 import com.shaunyarbrough.laptracks.data.WorkoutRepository
 import com.shaunyarbrough.laptracks.service.AccountService
+import com.shaunyarbrough.laptracks.service.TeamService
 import com.shaunyarbrough.laptracks.service.impl.AccountServiceImpl
+import com.shaunyarbrough.laptracks.service.impl.TeamServiceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -100,5 +102,10 @@ object DatabaseModule {
   @Provides
   fun provideAccountService(accountService: AccountServiceImpl): AccountService {
     return accountService
+  }
+
+  @Provides
+  fun provideTeamService(teamService: TeamServiceImpl): TeamService{
+    return teamService
   }
 }
