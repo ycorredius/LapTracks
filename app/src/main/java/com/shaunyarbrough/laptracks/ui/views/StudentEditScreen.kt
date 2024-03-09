@@ -56,13 +56,13 @@ fun StudentEditScreen(
 				.padding(innerPadding)
 		) {
 			StudentEditBody(
-				student = viewModel.studentUiState.studentDetails,
-				isError = viewModel.studentUiState.isStudentValid,
+				student = viewModel.uiState.studentDetails,
+				isError = viewModel.uiState.isStudentValid,
 				onChange = viewModel::updateUiState,
 				onUpdate = {
 					coroutine.launch {
 						viewModel.updateStudent()
-						if (viewModel.studentUiState.isStudentValid) {
+						if (viewModel.uiState.isStudentValid) {
 							navigateToStudentList()
 						}
 					}

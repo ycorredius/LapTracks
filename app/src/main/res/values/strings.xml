@@ -42,4 +42,5 @@
     <string name="team_create">Create your Team</string>
     <string name="teams">Your Teams</string>
     <string name="no_teams">No Teams available</string>
+    <string name="team_details">%1$s</string>
 </resources>

@@ -6,8 +6,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.shaunyarbrough.laptracks.data.AppDatabase
 import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.StudentDao
+import com.shaunyarbrough.laptracks.data.StudentRoom
 import com.shaunyarbrough.laptracks.data.Workout
 import com.shaunyarbrough.laptracks.data.WorkoutDao
+import com.shaunyarbrough.laptracks.data.WorkoutRoom
 
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -24,14 +26,14 @@ class LapTrackDatabaseTest {
     private lateinit var db: AppDatabase
 
     private val student =
-        Student(id = 1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
+        StudentRoom(id = 1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
     private val student2 =
-        Student(id = 2, firstName = "Susan", lastName = "Williams", displayName = "SWilliams")
+        StudentRoom(id = 2, firstName = "Susan", lastName = "Williams", displayName = "SWilliams")
 
     private val workout1 =
-        Workout(1, date = "Date1", listOf(5_000L, 6_000L), interval = "300", studentId = 1, totalTime = 10_000L)
+        WorkoutRoom(1, date = "Date1", listOf(5_000L, 6_000L), interval = "300", studentId = 1, totalTime = 10_000L)
     private val workout2 =
-        Workout(2, date = "Date1", listOf(5_000L, 6_000L), interval = "300", studentId = 1, totalTime = 10_000L)
+        WorkoutRoom(2, date = "Date1", listOf(5_000L, 6_000L), interval = "300", studentId = 1, totalTime = 10_000L)
 
     @Before
     fun createDb() {
@@ -96,7 +98,7 @@ class LapTrackDatabaseTest {
         createStudent()
 
         studentDao.update(
-            Student(
+            StudentRoom(
                 id = 1,
                 firstName = "Little Bill",
                 lastName = "Costco",
@@ -105,7 +107,7 @@ class LapTrackDatabaseTest {
         )
         val result = studentDao.getStudent(1)
         assertEquals(
-            Student(
+            StudentRoom(
                 id = 1,
                 firstName = "Little Bill",
                 lastName = "Costco",

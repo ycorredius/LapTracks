@@ -39,6 +39,7 @@ import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
 import com.shaunyarbrough.laptracks.ui.viewmodels.WorkoutViewModel
+import com.shaunyarbrough.laptracks.ui.viewmodels.toStudent
 
 object ParticipantDestination : NavigationDestination {
 	override val route = "participants"
@@ -54,7 +55,6 @@ fun ParticipantScreen(
 ) {
 	val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 	val workoutUiState by workoutViewModel.workoutUiState.collectAsState()
-	val studentUiState by workoutViewModel.studentsUiState.collectAsState()
 	Scaffold(
 		topBar = {
 			LapTrackAppTopAppBar(
@@ -68,7 +68,7 @@ fun ParticipantScreen(
 		Box(modifier = Modifier.padding(innerPadding)) {
 			ParticipantBody(
 				participants = workoutUiState.participantsList,
-				students = studentUiState.studentsList,
+				students = emptyList(),
 				onCheckBoxChange = { workoutViewModel.setParticipants(it) },
 				navigateToInterval = navigateToInterval,
 			)
@@ -170,14 +170,15 @@ fun ParticipantScreenPreview() {
 	ParticipantBody(
 		participants = mapOf(
 			Student(
-				id = 0,
+				id = "best student id",
 				firstName = "Billy",
 				lastName = "Smith",
-				displayName = "BSmith"
+				displayName = "BSmith",
+				teamId = "best team id"
 			) to listOf(1_000L, 2_000L)
 		),
 		students = listOf(
-			Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
+			Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith", teamId = "best team id")
 		),
 		onCheckBoxChange = { /* nothing */ },
 		navigateToInterval = { /* nothing */ },

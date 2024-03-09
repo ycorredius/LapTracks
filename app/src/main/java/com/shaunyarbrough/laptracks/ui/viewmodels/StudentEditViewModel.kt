@@ -6,49 +6,45 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
+import com.shaunyarbrough.laptracks.ServiceLocator.studentWorkoutRepository
+import com.shaunyarbrough.laptracks.service.StudentService
 import com.shaunyarbrough.laptracks.ui.views.StudentEditDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class StudentEditViewModel @Inject constructor(
 	savedStateHandle: SavedStateHandle,
-	private val studentWorkoutRepository: StudentWorkoutRepository
+	private val studentService: StudentService
 ) : ViewModel() {
 
-	private val studentId: Int = checkNotNull(savedStateHandle[StudentEditDestination.studentIdArg])
+	private val studentId: String = checkNotNull(savedStateHandle[StudentEditDestination.studentIdArg])
 
-	var studentUiState by mutableStateOf(StudentUiState())
+	var uiState by mutableStateOf(StudentUiState())
 		private set
 
 	init{
 		viewModelScope.launch {
-			studentUiState =  studentWorkoutRepository.getStudent(studentId)
-				.filterNotNull()
-				.first()
-				.toStudentUiState()
+			uiState = studentService.getStudent(studentId)?.toStudentUiState() ?: StudentUiState()
 		}
 	}
 
 
 	fun updateUiState(studentDetails: StudentDetails) {
-		studentUiState = StudentUiState(
+		uiState = StudentUiState(
 			studentDetails = studentDetails,
 			isStudentValid = validateStudent(studentDetails)
 		)
 	}
 
 	suspend fun updateStudent(){
-		if(studentUiState.studentDetails.isValid()){
-			studentWorkoutRepository.updateStudent(studentUiState.studentDetails.toStudent())
+		if(uiState.studentDetails.isValid()){
+			studentService.updateStudent(uiState.studentDetails.toStudent())
 		}
 	}
 
-	private fun validateStudent(studentDetails: StudentDetails = studentUiState.studentDetails): Boolean {
+	private fun validateStudent(studentDetails: StudentDetails = uiState.studentDetails): Boolean {
 		return with(studentDetails){
 			firstName.isNotBlank() && lastName.isNotBlank() && displayName.isNotBlank()
 		}

@@ -60,9 +60,9 @@ fun WorkoutDetailsScreen(
 			)
 		}
 	) { innerPadding ->
-		val workoutDetailsUiState = viewModel.workoutUiState.collectAsState()
-		val workoutDetails = workoutDetailsUiState.value.workoutDetails
-		val studentDetails = workoutDetailsUiState.value.studentDetails
+		val workoutDetailsUiState = viewModel.uiState
+		val workoutDetails = workoutDetailsUiState.workoutDetails
+		val studentDetails = workoutDetailsUiState.studentDetails
 
 		Column(modifier = Modifier.padding(innerPadding)) {
 			WorkoutDetailsBody(

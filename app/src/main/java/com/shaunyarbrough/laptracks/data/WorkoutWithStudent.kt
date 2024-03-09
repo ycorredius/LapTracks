@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class WorkoutWithStudent(
-	@Embedded val student: Student,
+	@Embedded val student: StudentRoom,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "studentId"
 	)
-	val workout: Workout
+	val workout: WorkoutRoom
 )

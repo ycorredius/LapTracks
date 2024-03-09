@@ -219,7 +219,7 @@ private fun IntervalDropdownMenu(
 fun IntervalScreenPreview() {
   LapTracksTheme {
     IntervalBody(
-      participants = mapOf(Student(id = 0, "Billy","Smith", "BSmith") to listOf(1_000L, 2_000L)),
+      participants = mapOf(Student(id = "some id", "Billy","Smith", "BSmith", teamId = "best team id") to listOf(1_000L, 2_000L)),
       selectedInterval = "800",
       setInterval = {},
       navigateToParticipantSummary = {},

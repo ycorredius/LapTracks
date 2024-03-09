@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Workout
+import com.shaunyarbrough.laptracks.data.WorkoutRoom
 import com.shaunyarbrough.laptracks.ui.views.ParticipantDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,13 +33,7 @@ class WorkoutViewModel @Inject constructor(
   private val _uiState = MutableStateFlow(WorkoutUiState())
   val workoutUiState: StateFlow<WorkoutUiState> = _uiState.asStateFlow()
 
-  val studentsUiState: StateFlow<StudentsUiState> =
-    studentWorkoutRepository.getStudentsStream().map { StudentsUiState(it) }
-      .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = StudentsUiState()
-      )
+  val studentsUiState = StudentUiState()
 
   fun setParticipants(participant: Student) {
     _uiState.update { currentState ->
@@ -77,9 +72,9 @@ class WorkoutViewModel @Inject constructor(
 
   fun saveWorkout() {
     viewModelScope.launch(Dispatchers.IO) {
-      workoutUiState.value.participantsList.forEach {
-        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
-      }
+//      workoutUiState.value.participantsList.forEach {
+//        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
+//      }
     }
   }
 
@@ -109,8 +104,8 @@ class WorkoutViewModel @Inject constructor(
 }
 
 //TODO: Reconfigure this to create an more readable and optimized experience
-fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String, totalTime: Long): Workout{
-  return Workout(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval, totalTime = totalTime)
+fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String, totalTime: Long): WorkoutRoom{
+  return WorkoutRoom(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval, totalTime = totalTime)
 }
 
 data class WorkoutUiState(

@@ -57,12 +57,12 @@ object StudentDetailsDestination : NavigationDestination {
 @Composable
 fun StudentDetailsScreen(
 	viewModel: StudentDetailsViewModel = hiltViewModel(),
-	navigateToStudentEdit: (Int) -> Unit,
+	navigateToStudentEdit: (String) -> Unit,
 	navigateUp: () -> Unit,
 	navigateToStudentList: () -> Unit,
-	navigateToWorkoutDetails: (Int) -> Unit
+	navigateToWorkoutDetails: (String) -> Unit
 ) {
-	val studentDetailsUiState by viewModel.studentDetailsUiState.collectAsState()
+	val studentDetailsUiState = viewModel.uiState
 
 	Scaffold(
 		topBar = {
@@ -101,7 +101,7 @@ fun StudentDetailsBody(
 	onConfirmation: () -> Unit,
 	navigateToStudentList: () -> Unit,
 	modifier: Modifier = Modifier,
-	navigateToWorkoutDetails: (Int) -> Unit
+	navigateToWorkoutDetails: (String) -> Unit
 ) {
 	var dialogOpen by remember { mutableStateOf(false) }
 	when {
@@ -155,7 +155,7 @@ fun StudentDetailsBody(
 @Composable
 fun WorkoutItem(
 	workout: Workout,
-	navigateToWorkoutDetails: (Int) -> Unit
+	navigateToWorkoutDetails: (String) -> Unit
 ) {
 	Card(shape = MaterialTheme.shapes.extraSmall, modifier = Modifier.clickable { navigateToWorkoutDetails(workout.id)}) {
 		Row(

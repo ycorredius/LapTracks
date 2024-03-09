@@ -42,7 +42,8 @@ object TeamsDestination : NavigationDestination {
 @Composable
 fun TeamsScreen(
     teamsViewModel: TeamsViewModel = hiltViewModel(),
-    navigateToTeamEntry: () -> Unit
+    navigateToTeamEntry: () -> Unit,
+    navigateToTeam: (String) -> Unit
 ) {
     val teams by teamsViewModel.teams.collectAsState(initial = emptyList())
     Scaffold(
@@ -53,7 +54,7 @@ fun TeamsScreen(
             )
         },
         floatingActionButton = {
-           FloatingActionButton(onClick = { navigateToTeamEntry() }) {
+            FloatingActionButton(onClick = { navigateToTeamEntry() }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add team button")
             }
         }
@@ -63,14 +64,18 @@ fun TeamsScreen(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            TeamsBody(teams = teams)
+            TeamsBody(
+                teams = teams,
+                navigateToTeam
+            )
         }
     }
 }
 
 @Composable
 fun TeamsBody(
-    teams: List<Team>
+    teams: List<Team>,
+    navigateToTeam: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -86,7 +91,10 @@ fun TeamsBody(
         } else {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(teams) {
-                    TeamItem(team = it)
+                    TeamItem(
+                        team = it,
+                        navigateToTeam
+                    )
                 }
             }
         }
@@ -95,9 +103,10 @@ fun TeamsBody(
 
 @Composable
 fun TeamItem(
-    team: Team
+    team: Team,
+    navigateToTeam: (String) -> Unit
 ) {
-    Card(modifier = Modifier.clickable { /* TODO */ }) {
+    Card(modifier = Modifier.clickable { navigateToTeam(team.id) }) {
         Text(text = team.name)
     }
 }
@@ -106,7 +115,8 @@ fun TeamItem(
 @Composable
 fun EmptyTeamsScreenPreview() {
     LapTracksTheme {
-        TeamsBody(teams = emptyList())
+        TeamsBody(teams = emptyList(),
+            navigateToTeam = {/* nothing */ })
     }
 }
 
@@ -114,6 +124,7 @@ fun EmptyTeamsScreenPreview() {
 @Composable
 fun TeamsScreenPreview() {
     LapTracksTheme {
-        TeamsBody(teams = listOf(Team(id = "somestring", name = "Best Team", userId = "someUUid")))
+        TeamsBody(teams = listOf(Team(id = "somestring", name = "Best Team", userId = "someUUid")),
+            navigateToTeam = { /*nothing*/ })
     }
 }

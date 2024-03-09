@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface WorkoutDao {
   @Insert(onConflict  = OnConflictStrategy.REPLACE)
-  fun workoutInserts(vararg workouts: Workout)
+  fun workoutInserts(vararg workouts: WorkoutRoom)
 
   @Query("SELECT * FROM workouts")
-  fun getWorkouts(): Flow<List<Workout>?>
+  fun getWorkouts(): Flow<List<WorkoutRoom>?>
 
   @Transaction
   @Query("SELECT workouts.*, students.* FROM workouts JOIN students ON workouts.studentId = studentId WHERE workouts.id = :id ")

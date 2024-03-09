@@ -1,10 +1,14 @@
 package com.shaunyarbrough.laptracks.service.impl
 
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.dataObjects
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
+import com.google.firebase.firestore.toObjects
+import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.Team
+import com.shaunyarbrough.laptracks.data.TeamWithStudents
 import com.shaunyarbrough.laptracks.service.AccountService
 import com.shaunyarbrough.laptracks.service.TeamService
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -25,10 +29,15 @@ class TeamServiceImpl @Inject constructor(
                 .dataObjects()
         }
 
-    override suspend fun getTeam(id: String): Team? {
-        return Firebase.firestore
+    override suspend fun getTeam(id: String): TeamWithStudents {
+        val teamDoc = Firebase.firestore
             .collection(TEAM_COLLECTION)
-            .document(id).get().await().toObject()
+            .document(id).get().await()
+
+        val team =
+            teamDoc.toObject<TeamWithStudents?>() ?: throw NoSuchElementException("Team not found")
+
+        return team.copy(students = getStudentForTeam(id))
     }
 
     override suspend fun createTeam(team: Team) {
@@ -43,8 +52,26 @@ class TeamServiceImpl @Inject constructor(
             .document(team.id).set(team).await()
     }
 
+
+    private suspend fun getStudentForTeam(teamId: String): List<Student> {
+        val querySnapshot = Firebase.firestore
+            .collection(STUDENT_COLLECTION)
+            .whereEqualTo(TEAM_ID, teamId)
+            .get()
+            .await()
+
+        querySnapshot.documents.forEach { documentSnapshot ->
+            val rawData = documentSnapshot.data
+            Log.d("FirestoreData", "Raw Data: $rawData")
+        }
+
+        return querySnapshot.toObjects<Student>()
+    }
+
     companion object {
         private const val TEAM_COLLECTION = "teams"
+        private const val TEAM_ID = "teamId"
+        private const val STUDENT_COLLECTION = "students"
         private const val USER_ID = "userId"
     }
 }

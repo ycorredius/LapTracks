@@ -157,10 +157,11 @@ fun ResultScreenPreview() {
 	ResultBody(
 		participants = mapOf(
 			Student(
-				id = 0,
+				id = "best student id",
 				firstName = "Billy",
 				lastName = "Smith",
-				displayName = "BSmith"
+				displayName = "BSmith",
+				teamId = "best team id"
 			) to listOf(5_000L)
 		),
 		onSendEmailClick = { _, _ -> },
