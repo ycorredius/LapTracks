@@ -4,10 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.shaunyarbrough.laptracks.ServiceLocator.studentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.Student
-import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
-import com.shaunyarbrough.laptracks.service.AccountService
 import com.shaunyarbrough.laptracks.service.StudentService
 import com.shaunyarbrough.laptracks.service.TeamService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +14,7 @@ import javax.inject.Inject
 class StudentEntryViewModel @Inject constructor(
 	private val studentService: StudentService,
 	teamService: TeamService
-	) :
+) :
 	ViewModel() {
 
 	var studentUiState by mutableStateOf(StudentUiState())
@@ -68,15 +65,16 @@ fun StudentDetails.toStudent(): Student = Student(
 )
 
 fun Student.toStudentUiState(isStudentValid: Boolean = false): StudentUiState = StudentUiState(
-  studentDetails = this.toStudentDetails(),
-  isStudentValid =  isStudentValid
+	studentDetails = this.toStudentDetails(),
+	isStudentValid = isStudentValid
 )
 
 fun Student.toStudentDetails(): StudentDetails = StudentDetails(
 	id = id,
 	firstName = firstName,
 	lastName = lastName,
-	displayName = displayName
+	displayName = displayName,
+	teamId = teamId
 )
 
 fun StudentDetails.isValid(): Boolean {
