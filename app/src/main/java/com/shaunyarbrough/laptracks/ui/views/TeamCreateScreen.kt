@@ -49,7 +49,7 @@ fun TeamCreateScreen(
     ) {
         Column(modifier = Modifier.padding(it)) {
             TeamCreateBody(
-                teamDetails = teamCreateViewModel.teamUiState.teamDetails,
+                teamDetails = teamCreateViewModel.teamState.teamDetails,
                 updateTeamDetails = teamCreateViewModel::updateUiState,
                 saveTeam = {
                     coroutine.launch {

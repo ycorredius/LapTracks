@@ -1,45 +1,56 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.service.TeamService
 import com.shaunyarbrough.laptracks.ui.views.TeamsDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TeamDetailsViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val teamService: TeamService
-): LapTrackViewModel() {
-    val team = MutableStateFlow(TeamWithStudentsDetails("Sometime", emptyList()))
+	savedStateHandle: SavedStateHandle,
+	private val teamService: TeamService
+) : LapTrackViewModel() {
+	var teamDetailsUiState: TeamDetailsUiState by mutableStateOf(TeamDetailsUiState.Loading)
+		private set
 
-    private val teamId: String =
-        checkNotNull(savedStateHandle[TeamsDetailsDestination.teamIdArgs])
-    init {
-       fetchTeamDetails()
-    }
+	private val teamId: String =
+		checkNotNull(savedStateHandle[TeamsDetailsDestination.teamIdArgs])
 
-    companion object{
-        private val DEFAULT_TEAM = TeamWithStudentsDetails("Sometime", emptyList())
-    }
+	init {
+		fetchTeamDetails()
+	}
 
-    private fun fetchTeamDetails(){
-        viewModelScope.launch {
-            try {
-                team.value = teamService.getTeam(teamId).toTeamWithStudentsDetails()
-            } catch (e: Exception){
-                Log.e("TeamDetailsViewModel", "Error fetching team details: $e")
-            }
-        }
-    }
+	private fun fetchTeamDetails() {
+		viewModelScope.launch {
+			teamDetailsUiState = TeamDetailsUiState.Loading
+			teamDetailsUiState = try {
+				TeamDetailsUiState.TeamDetailsSuccess(
+					teamService.getTeam(teamId).toTeamWithStudentsDetails()
+				)
+			} catch (e: Exception) {
+				TeamDetailsUiState.Error
+			}
+		}
+	}
+}
+
+sealed interface TeamDetailsUiState {
+	data class TeamDetailsSuccess(val teamDetailsWithStudentsDetails: TeamWithStudentsDetails) :
+		TeamDetailsUiState
+
+	data object Error : TeamDetailsUiState
+
+	data object Loading : TeamDetailsUiState
 }
 
 data class TeamWithStudentsDetails(
-    val name: String = "",
-    val students: List<Student?> = emptyList()
+	val name: String = "",
+	val students: List<Student?>
 )

@@ -1,10 +1,11 @@
 package com.shaunyarbrough.laptracks.data
 
+import com.google.firebase.firestore.DocumentId
+
 data class StudentWithWorkout(
-    val id: String = "0",
-    val date: String,
-    val lapList: List<Long>,
-    val interval: String,
-    val totalTime: Long,
-    val student: Student
+	@DocumentId val id: String = "",
+	val firstName: String = "",
+	val lastName: String = "",
+	val displayName: String = "",
+	val workouts: List<Workout>? = emptyList()
 )

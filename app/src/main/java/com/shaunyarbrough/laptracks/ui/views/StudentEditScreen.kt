@@ -77,7 +77,7 @@ fun StudentEditScreen(
 						if (viewModel.uiState.isStudentValid) {
 							openAndPop(
 								"${StudentDetailsDestination.route}/${viewModel.uiState.studentDetails.id}",
-								StudentEditDestination.routeWithArg
+								"${StudentEditDestination.route}/${viewModel.uiState.studentDetails.id}"
 							)
 						}
 					}
@@ -161,7 +161,7 @@ fun StudentEditBody(
 		ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = { isExpanded = it }) {
 			OutlinedTextField(
 				value = selectedTeam.first,
-				onValueChange = {  },
+				onValueChange = { },
 				readOnly = true,
 				label = { Text(text = "Team") },
 				supportingText = {

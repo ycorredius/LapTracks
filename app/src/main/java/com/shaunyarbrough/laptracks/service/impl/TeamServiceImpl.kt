@@ -18,60 +18,68 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class TeamServiceImpl @Inject constructor(
-    private val auth: AccountService
+	private val auth: AccountService
 ) : TeamService {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override val teams: Flow<List<Team>>
-        get() = auth.currentUser.flatMapLatest { teams ->
-            Firebase.firestore
-                .collection(TEAM_COLLECTION)
-                .whereEqualTo(USER_ID, teams?.id)
-                .dataObjects()
-        }
+	@OptIn(ExperimentalCoroutinesApi::class)
+	override val teams: Flow<List<Team>>
+		get() = auth.currentUser.flatMapLatest { teams ->
+			Firebase.firestore
+				.collection(TEAM_COLLECTION)
+				.whereEqualTo(USER_ID, teams?.id)
+				.dataObjects()
+		}
 
-    override suspend fun getTeam(id: String): TeamWithStudents {
-        val teamDoc = Firebase.firestore
-            .collection(TEAM_COLLECTION)
-            .document(id).get().await()
+	override suspend fun getTeams(): List<Team> {
+		return Firebase.firestore.collection(TEAM_COLLECTION)
+			.whereEqualTo(USER_ID, auth.currentUserId)
+			.get()
+			.await()
+			.toObjects()
+	}
 
-        val team =
-            teamDoc.toObject<TeamWithStudents?>() ?: throw NoSuchElementException("Team not found")
+	override suspend fun getTeam(id: String): TeamWithStudents {
+		val teamDoc = Firebase.firestore
+			.collection(TEAM_COLLECTION)
+			.document(id).get().await()
 
-        return team.copy(students = getStudentForTeam(id))
-    }
+		val team =
+			teamDoc.toObject<TeamWithStudents?>() ?: throw NoSuchElementException("Team not found")
 
-    override suspend fun createTeam(team: Team) {
-        val teamWithUserId = team.copy(userId = auth.currentUserId)
-        Firebase.firestore.collection(TEAM_COLLECTION)
-            .add(teamWithUserId).await()
-    }
+		return team.copy(students = getStudentForTeam(id))
+	}
 
-    override suspend fun updateTeam(team: Team) {
-        Firebase.firestore
-            .collection(TEAM_COLLECTION)
-            .document(team.id).set(team).await()
-    }
+	override suspend fun createTeam(team: Team) {
+		val teamWithUserId = team.copy(userId = auth.currentUserId)
+		Firebase.firestore.collection(TEAM_COLLECTION)
+			.add(teamWithUserId).await()
+	}
+
+	override suspend fun updateTeam(team: Team) {
+		Firebase.firestore
+			.collection(TEAM_COLLECTION)
+			.document(team.id).set(team).await()
+	}
 
 
-    private suspend fun getStudentForTeam(teamId: String): List<Student> {
-        val querySnapshot = Firebase.firestore
-            .collection(STUDENT_COLLECTION)
-            .whereEqualTo(TEAM_ID, teamId)
-            .get()
-            .await()
+	private suspend fun getStudentForTeam(teamId: String): List<Student> {
+		val querySnapshot = Firebase.firestore
+			.collection(STUDENT_COLLECTION)
+			.whereEqualTo(TEAM_ID, teamId)
+			.get()
+			.await()
 
-        querySnapshot.documents.forEach { documentSnapshot ->
-            val rawData = documentSnapshot.data
-            Log.d("FirestoreData", "Raw Data: $rawData")
-        }
+		querySnapshot.documents.forEach { documentSnapshot ->
+			val rawData = documentSnapshot.data
+			Log.d("FirestoreData", "Raw Data: $rawData")
+		}
 
-        return querySnapshot.toObjects<Student>()
-    }
+		return querySnapshot.toObjects<Student>()
+	}
 
-    companion object {
-        private const val TEAM_COLLECTION = "teams"
-        private const val TEAM_ID = "teamId"
-        private const val STUDENT_COLLECTION = "students"
-        private const val USER_ID = "userId"
-    }
+	companion object {
+		private const val TEAM_COLLECTION = "teams"
+		private const val TEAM_ID = "teamId"
+		private const val STUDENT_COLLECTION = "students"
+		private const val USER_ID = "userId"
+	}
 }

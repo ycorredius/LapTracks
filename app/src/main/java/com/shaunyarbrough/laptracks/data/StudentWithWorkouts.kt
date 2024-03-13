@@ -8,5 +8,5 @@ data class StudentWithWorkouts(
 	val lastName: String = "",
 	val displayName: String = "",
 	val teamId: String = "",
-	val workouts: List<Workout?>
+	val workouts: List<Workout?> = emptyList()
 )

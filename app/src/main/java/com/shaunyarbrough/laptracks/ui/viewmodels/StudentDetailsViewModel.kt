@@ -1,12 +1,15 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shaunyarbrough.laptracks.data.Workout
+import com.shaunyarbrough.laptracks.data.StudentWithWorkouts
 import com.shaunyarbrough.laptracks.service.StudentService
 import com.shaunyarbrough.laptracks.ui.views.StudentDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,26 +22,40 @@ class StudentDetailsViewModel @Inject constructor(
 	private val studentId: String =
 		checkNotNull(savedStateHandle[StudentDetailsDestination.studentIdArg])
 
-	var uiState: StudentDetailsUiState = StudentDetailsUiState()
+	private val _uiState: MutableStateFlow<StudentDetailsUiState> = MutableStateFlow<StudentDetailsUiState>(StudentDetailsUiState.Loading)
+	val uiState: StateFlow<StudentDetailsUiState> = _uiState
+	
 
 	init {
 		viewModelScope.launch {
-			val student = studentService.getStudent(studentId)
-			if (student != null) {
-				uiState = StudentDetailsUiState(
-					studentDetails = student.toStudentDetails(),
-				)
-			}
+			getStudent()
 		}
 	}
 
-	suspend fun removeUser() {
-		studentService.deleteStudent(uiState.studentDetails.id)
+	suspend fun removeUser(studentId: String) {
+		studentService.deleteStudent(studentId)
+	}
+
+	private suspend fun getStudent() {
+		_uiState.value = StudentDetailsUiState.Loading
+		 try {
+			studentService.getStudentWithWorkouts(studentId).collect{
+				studentWithWorkout ->
+				_uiState.value = StudentDetailsUiState.Success(studentWithWorkout)
+			}
+		} catch (e: Exception){
+			Log.e("StudentDetailsError", "Something went wrong: $e")
+			_uiState.value = StudentDetailsUiState.Error
+		}
 	}
 }
 
+sealed interface StudentDetailsUiState {
+	data class Success(val studentDetails: StudentWithWorkouts) :
+		StudentDetailsUiState
 
-data class StudentDetailsUiState(
-	val studentDetails: StudentDetails = StudentDetails(),
-	val workoutDetails: List<Workout>? = emptyList()
-)
+	data object Error: StudentDetailsUiState
+
+	data object Loading: StudentDetailsUiState
+}
+

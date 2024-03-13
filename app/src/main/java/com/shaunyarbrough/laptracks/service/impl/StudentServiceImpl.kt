@@ -12,6 +12,7 @@ import com.shaunyarbrough.laptracks.data.StudentWithWorkouts
 import com.shaunyarbrough.laptracks.data.Workout
 import com.shaunyarbrough.laptracks.service.StudentService
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -26,7 +27,7 @@ class StudentServiceImpl @Inject constructor() : StudentService {
 			.get().await().toObject<Student>()
 	}
 
-	override suspend fun getStudentWithWorkouts(id: String): StudentWithWorkouts {
+	override suspend fun getStudentWithWorkouts(id: String): Flow<StudentWithWorkouts> = flow {
 		val studentDoc = Firebase.firestore
 			.collection(STUDENT_COLLECTION)
 			.document(id).get().await()
@@ -34,8 +35,8 @@ class StudentServiceImpl @Inject constructor() : StudentService {
 		val student =
 			studentDoc.toObject<StudentWithWorkouts?>()
 				?: throw NoSuchElementException("Student not found")
-
-		return student.copy(workouts = getWorkouts(id))
+		val workouts = getWorkouts(id)
+		emit(student.copy(workouts = workouts))
 	}
 
 	override suspend fun createStudent(student: Student) {
@@ -64,7 +65,9 @@ class StudentServiceImpl @Inject constructor() : StudentService {
 	}
 
 	override suspend fun deleteStudent(id: String) {
-		TODO("Not yet implemented")
+		Firebase.firestore
+			.collection(STUDENT_COLLECTION)
+			.document(id).delete().await()
 	}
 
 	companion object {
