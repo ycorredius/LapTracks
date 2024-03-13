@@ -35,7 +35,7 @@ import androidx.navigation.NavHostController
 import com.shaunyarbrough.laptracks.LapTrackAppBottomAppBar
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
-import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentRoom
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
 import com.shaunyarbrough.laptracks.ui.viewmodels.WorkoutViewModel
@@ -54,7 +54,6 @@ fun ParticipantScreen(
 ) {
 	val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 	val workoutUiState by workoutViewModel.workoutUiState.collectAsState()
-	val studentUiState by workoutViewModel.studentsUiState.collectAsState()
 	Scaffold(
 		topBar = {
 			LapTrackAppTopAppBar(
@@ -68,7 +67,7 @@ fun ParticipantScreen(
 		Box(modifier = Modifier.padding(innerPadding)) {
 			ParticipantBody(
 				participants = workoutUiState.participantsList,
-				students = studentUiState.studentsList,
+				students = emptyList(),
 				onCheckBoxChange = { workoutViewModel.setParticipants(it) },
 				navigateToInterval = navigateToInterval,
 			)
@@ -78,10 +77,10 @@ fun ParticipantScreen(
 
 @Composable
 fun ParticipantBody(
-	participants: Map<Student, List<Long>>,
-	students: List<Student>,
+	participants: Map<StudentRoom, List<Long>>,
+	students: List<StudentRoom>,
 	navigateToInterval: () -> Unit,
-	onCheckBoxChange: (Student) -> Unit = {}
+	onCheckBoxChange: (StudentRoom) -> Unit = {}
 ) {
 	Column(
 		modifier = Modifier
@@ -126,9 +125,9 @@ fun ParticipantBody(
 
 @Composable
 private fun ParticipantList(
-	studentList: List<Student>,
-	participants: Map<Student, List<Long>>,
-	onCheckBoxChange: (Student) -> Unit
+	studentList: List<StudentRoom>,
+	participants: Map<StudentRoom, List<Long>>,
+	onCheckBoxChange: (StudentRoom) -> Unit
 ) {
 	LazyColumn(verticalArrangement = Arrangement.spacedBy(5.dp)) {
 		items(studentList) { student ->
@@ -169,15 +168,15 @@ private fun ParticipantList(
 fun ParticipantScreenPreview() {
 	ParticipantBody(
 		participants = mapOf(
-			Student(
+			StudentRoom(
 				id = 0,
 				firstName = "Billy",
 				lastName = "Smith",
-				displayName = "BSmith"
+				displayName = "BSmith",
 			) to listOf(1_000L, 2_000L)
 		),
 		students = listOf(
-			Student(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
+			StudentRoom(firstName = "Billy", lastName = "Smith", displayName = "BSmith")
 		),
 		onCheckBoxChange = { /* nothing */ },
 		navigateToInterval = { /* nothing */ },

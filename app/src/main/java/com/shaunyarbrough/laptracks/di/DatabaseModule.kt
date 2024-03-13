@@ -20,7 +20,13 @@ import com.shaunyarbrough.laptracks.data.StudentWorkoutRepositoryImpl
 import com.shaunyarbrough.laptracks.data.WorkoutDao
 import com.shaunyarbrough.laptracks.data.WorkoutRepository
 import com.shaunyarbrough.laptracks.service.AccountService
+import com.shaunyarbrough.laptracks.service.StudentService
+import com.shaunyarbrough.laptracks.service.TeamService
+import com.shaunyarbrough.laptracks.service.WorkoutService
 import com.shaunyarbrough.laptracks.service.impl.AccountServiceImpl
+import com.shaunyarbrough.laptracks.service.impl.StudentServiceImpl
+import com.shaunyarbrough.laptracks.service.impl.TeamServiceImpl
+import com.shaunyarbrough.laptracks.service.impl.WorkoutServiceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -100,5 +106,20 @@ object DatabaseModule {
   @Provides
   fun provideAccountService(accountService: AccountServiceImpl): AccountService {
     return accountService
+  }
+
+  @Provides
+  fun provideTeamService(teamService: TeamServiceImpl): TeamService{
+    return teamService
+  }
+
+  @Provides
+  fun provideStudentService(studentService: StudentServiceImpl): StudentService{
+    return studentService
+  }
+
+  @Provides
+  fun provideWorkoutService(workoutService: WorkoutServiceImpl): WorkoutService{
+    return workoutService
   }
 }

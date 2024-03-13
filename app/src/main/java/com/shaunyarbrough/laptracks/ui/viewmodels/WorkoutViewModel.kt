@@ -4,17 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentRoom
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
-import com.shaunyarbrough.laptracks.data.Workout
+import com.shaunyarbrough.laptracks.data.WorkoutRoom
 import com.shaunyarbrough.laptracks.ui.views.ParticipantDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -32,15 +30,9 @@ class WorkoutViewModel @Inject constructor(
   private val _uiState = MutableStateFlow(WorkoutUiState())
   val workoutUiState: StateFlow<WorkoutUiState> = _uiState.asStateFlow()
 
-  val studentsUiState: StateFlow<StudentsUiState> =
-    studentWorkoutRepository.getStudentsStream().map { StudentsUiState(it) }
-      .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-        initialValue = StudentsUiState()
-      )
+  val studentsUiState = StudentUiState()
 
-  fun setParticipants(participant: Student) {
+  fun setParticipants(participant: StudentRoom) {
     _uiState.update { currentState ->
       val newParticipants =
         if (currentState.participantsList.containsKey(participant)) {
@@ -58,7 +50,7 @@ class WorkoutViewModel @Inject constructor(
     }
   }
 
-  fun setParticipantTime(participant: Student, timeStamp: Long) {
+  fun setParticipantTime(participant: StudentRoom, timeStamp: Long) {
     _uiState.update { currentState ->
       val newMap = currentState.participantsList.keys.associateWith { key ->
         currentState.participantsList.getValue(key) + if (key == participant) {
@@ -77,9 +69,9 @@ class WorkoutViewModel @Inject constructor(
 
   fun saveWorkout() {
     viewModelScope.launch(Dispatchers.IO) {
-      workoutUiState.value.participantsList.forEach {
-        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
-      }
+//      workoutUiState.value.participantsList.forEach {
+//        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
+//      }
     }
   }
 
@@ -109,12 +101,12 @@ class WorkoutViewModel @Inject constructor(
 }
 
 //TODO: Reconfigure this to create an more readable and optimized experience
-fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String, totalTime: Long): Workout{
-  return Workout(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval, totalTime = totalTime)
+fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String, totalTime: Long): WorkoutRoom{
+  return WorkoutRoom(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval, totalTime = totalTime)
 }
 
 data class WorkoutUiState(
-  val participantsList: Map<Student, List<Long>> = mapOf(),
+  val participantsList: Map<StudentRoom, List<Long>> = mapOf(),
   val interval: String = "",
   val date: String = SimpleDateFormat("MM-dd-yyyy").format(Date()),
   val totalTime: Long = 0L

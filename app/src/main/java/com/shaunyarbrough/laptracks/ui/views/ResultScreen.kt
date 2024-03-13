@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
-import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentRoom
 import com.shaunyarbrough.laptracks.formatResults
 import com.shaunyarbrough.laptracks.getLapTimeAverage
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
@@ -79,7 +79,7 @@ fun ResultScreen(
 
 @Composable
 private fun ResultBody(
-	participants: Map<Student, List<Long>>,
+	participants: Map<StudentRoom, List<Long>>,
 	currentDate: String,
 	workout: String,
 	onSendEmailClick: (String, String) -> Unit,
@@ -156,11 +156,11 @@ private fun ResultBody(
 fun ResultScreenPreview() {
 	ResultBody(
 		participants = mapOf(
-			Student(
+			StudentRoom(
 				id = 0,
 				firstName = "Billy",
 				lastName = "Smith",
-				displayName = "BSmith"
+				displayName = "BSmith",
 			) to listOf(5_000L)
 		),
 		onSendEmailClick = { _, _ -> },
