@@ -4,17 +4,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface StudentRepository{
 
-  fun getStudentsStream(): Flow<List<Student>>
+  fun getStudentsStream(): Flow<List<StudentRoom>>
 
-  fun getStudentsWithWorkoutsStream():Flow<Map<Student, List<Workout>>>
+  fun getStudentsWithWorkoutsStream():Flow<Map<StudentRoom, List<Workout>>>
 
-  fun getStudent(id: Int): Flow<Student?>
+  fun getStudent(id: Int): Flow<StudentRoom?>
 
-  fun loadStudentWithWorkouts(id: Int): Flow<Map<Student, List<Workout>?>>
+  fun loadStudentWithWorkouts(id: Int): Flow<Map<StudentRoom, List<Workout>?>>
 
-  suspend fun insertStudent(student: Student)
+  suspend fun insertStudent(student: StudentRoom)
 
-  suspend fun updateStudent(student: Student)
+  suspend fun updateStudent(student: StudentRoom)
 
-  suspend fun deleteStudent(student: Student)
+  suspend fun deleteStudent(student: StudentRoom)
 }

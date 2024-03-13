@@ -3,9 +3,9 @@ package com.shaunyarbrough.laptracks.data
 import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
-  fun getWorkouts(): Flow<List<Workout>?>
+  fun getWorkouts(): Flow<List<WorkoutRoom>?>
 
-  suspend fun insertWorkout(workout: Workout)
+  suspend fun insertWorkout(workout: WorkoutRoom)
 
   fun getWorkoutWithStudent(id: Int): Flow<WorkoutWithStudent>
 }

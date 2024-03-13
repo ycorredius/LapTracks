@@ -12,6 +12,7 @@ import androidx.navigation.testing.TestNavHostController
 import com.shaunyarbrough.laptracks.LapTrackApp
 import com.shaunyarbrough.laptracks.ServiceLocator
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.StudentRoom
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.source.FakeStudentWorkoutRepository
 import com.shaunyarbrough.laptracks.ui.views.IntervalDestination
@@ -35,7 +36,7 @@ class ParticipantsScreenTest {
 		studentWorkoutRepository = FakeStudentWorkoutRepository()
 		ServiceLocator.studentWorkoutRepository = studentWorkoutRepository
 
-		val students = Student(id=1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
+		val students = StudentRoom(id=1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
 		studentWorkoutRepository.insertStudent(students)
 
 		composeTestRule.waitForIdle()
@@ -80,7 +81,7 @@ class ParticipantsScreenTest {
 		studentWorkoutRepository = FakeStudentWorkoutRepository()
 		ServiceLocator.studentWorkoutRepository = studentWorkoutRepository
 
-		val students = Student(id=1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
+		val students = StudentRoom(id=1, firstName = "Billy", lastName = "Smith", displayName = "BSmith")
 		studentWorkoutRepository.insertStudent(students)
 	}
 }

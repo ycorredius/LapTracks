@@ -6,21 +6,30 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
+import com.shaunyarbrough.laptracks.data.Team
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.viewmodels.StudentDetails
 import com.shaunyarbrough.laptracks.ui.viewmodels.StudentEditViewModel
@@ -38,7 +47,7 @@ object StudentEditDestination : NavigationDestination {
 fun StudentEditScreen(
 	viewModel: StudentEditViewModel = hiltViewModel(),
 	navigateUp: () -> Unit,
-	navigateToStudentList: () -> Unit
+	openAndPop: (String, String) -> Unit
 ) {
 	Scaffold(
 		topBar = {
@@ -55,15 +64,21 @@ fun StudentEditScreen(
 			modifier = Modifier
 				.padding(innerPadding)
 		) {
+			val teams = viewModel.teams.collectAsStateWithLifecycle(initialValue = emptyList())
+
 			StudentEditBody(
-				student = viewModel.studentUiState.studentDetails,
-				isError = viewModel.studentUiState.isStudentValid,
+				student = viewModel.uiState.studentDetails,
+				isError = viewModel.uiState.isStudentValid,
 				onChange = viewModel::updateUiState,
+				teams = teams.value,
 				onUpdate = {
 					coroutine.launch {
 						viewModel.updateStudent()
-						if (viewModel.studentUiState.isStudentValid) {
-							navigateToStudentList()
+						if (viewModel.uiState.isStudentValid) {
+							openAndPop(
+								"${StudentDetailsDestination.route}/${viewModel.uiState.studentDetails.id}",
+								"${StudentEditDestination.route}/${viewModel.uiState.studentDetails.id}"
+							)
 						}
 					}
 				}
@@ -72,14 +87,21 @@ fun StudentEditScreen(
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StudentEditBody(
 	student: StudentDetails,
 	onChange: (StudentDetails) -> Unit,
 	onUpdate: (StudentDetails) -> Unit,
 	isError: Boolean,
+	teams: List<Team>
 ) {
-
+	var selectedTeam by remember { mutableStateOf(Pair("Team name", "Team Id")) }
+	var isExpanded by remember { mutableStateOf(false) }
+	if (teams.isNotEmpty()) {
+		val studentTeam = teams.filter { it.id == student.teamId }
+		selectedTeam = Pair(studentTeam.first().name, studentTeam.first().id)
+	}
 	Column(
 		verticalArrangement = Arrangement.spacedBy(14.dp),
 		modifier = Modifier
@@ -136,6 +158,40 @@ fun StudentEditBody(
 			enabled = true,
 			singleLine = true
 		)
+		ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = { isExpanded = it }) {
+			OutlinedTextField(
+				value = selectedTeam.first,
+				onValueChange = { },
+				readOnly = true,
+				label = { Text(text = "Team") },
+				supportingText = {
+					if (student.teamId.isBlank() && isError) {
+						Text(
+							text = "Please select a team",
+							color = MaterialTheme.colorScheme.error
+						)
+					}
+				},
+				trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) },
+				modifier = Modifier
+					.fillMaxWidth()
+					.menuAnchor()
+			)
+			ExposedDropdownMenu(
+				expanded = isExpanded,
+				onDismissRequest = { isExpanded = !isExpanded }) {
+				teams.forEach { team ->
+					DropdownMenuItem(
+						text = { Text(text = team.name) },
+						onClick = {
+							selectedTeam = Pair(team.name, team.id)
+							onChange(student.copy(teamId = team.id))
+							isExpanded = !isExpanded
+						}
+					)
+				}
+			}
+		}
 		Button(onClick = { onUpdate(student) }, modifier = Modifier.fillMaxWidth(0.5f)) {
 			Text(text = "Update")
 		}
@@ -151,6 +207,7 @@ fun StudentEditPreview() {
 		),
 		isError = false,
 		onChange = {/* */ },
+		teams = emptyList(),
 		onUpdate = {}
 	)
 }

@@ -1,13 +1,11 @@
 package com.shaunyarbrough.laptracks.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentId
 
-@Entity(tableName = "students")
 data class Student(
-	@PrimaryKey(autoGenerate = true)
-  val id: Int = 0,
-	val firstName: String,
-	val lastName: String,
-	val displayName: String
+    @DocumentId val id: String = "",
+    val firstName: String ="",
+    val lastName: String ="",
+    val displayName: String = "",
+    val teamId: String =""
 )

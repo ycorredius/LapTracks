@@ -35,6 +35,12 @@ import com.shaunyarbrough.laptracks.ui.views.StudentEntryDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentEntryScreen
 import com.shaunyarbrough.laptracks.ui.views.StudentListDestination
 import com.shaunyarbrough.laptracks.ui.views.StudentListScreen
+import com.shaunyarbrough.laptracks.ui.views.TeamCreateDestination
+import com.shaunyarbrough.laptracks.ui.views.TeamCreateScreen
+import com.shaunyarbrough.laptracks.ui.views.TeamsDestination
+import com.shaunyarbrough.laptracks.ui.views.TeamsDetailsDestination
+import com.shaunyarbrough.laptracks.ui.views.TeamsDetailsScreen
+import com.shaunyarbrough.laptracks.ui.views.TeamsScreen
 import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsDestination
 import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsScreen
 
@@ -58,10 +64,35 @@ fun AppNavHost(
 			})
 		}
 		composable(route = SignupDestination.route) {
-			SignupScreen(openAndPopUp = {
-				route, popUp ->
-				openAndPopUp(navController,route,popUp)
+			SignupScreen(openAndPopUp = { route, popUp ->
+				openAndPopUp(navController, route, popUp)
 			})
+		}
+		composable(TeamsDestination.route) {
+			TeamsScreen(
+				navigateToTeamEntry = { navController.navigate(TeamCreateDestination.route) },
+				navigateToTeam = { navController.navigate("${TeamsDetailsDestination.route}/${it}") }
+			)
+		}
+		composable(
+			route = TeamsDetailsDestination.routeWithArgs,
+			arguments = listOf(navArgument(TeamsDetailsDestination.teamIdArgs) {
+				type = NavType.StringType
+			})
+		) {
+			TeamsDetailsScreen(
+				navigateUp = { navController.navigateUp() },
+				navigateToStudentEntry = { navController.navigate(StudentEntryDestination.route) },
+				navigateToStudentDetails = {
+					navController.navigate("${StudentDetailsDestination.route}/${it}")
+				}
+			)
+		}
+		composable(TeamCreateDestination.route) {
+			TeamCreateScreen(
+				navigateToTeams = { navController.navigate(TeamsDestination.route) },
+				navigateUp = { navController.navigateUp() }
+			)
 		}
 		composable(route = ParticipantDestination.route) {
 			ParticipantScreen(
@@ -119,28 +150,30 @@ fun AppNavHost(
 		composable(
 			route = StudentEditDestination.routeWithArg,
 			arguments = listOf(navArgument(StudentEditDestination.studentIdArg) {
-				type = NavType.IntType
+				type = NavType.StringType
 			})
 		) {
 			StudentEditScreen(
 				navigateUp = { navController.navigateUp() },
-				navigateToStudentList = { navController.navigate(StudentListDestination.route) }
+				openAndPop = { route, popUP ->
+					openAndPopUp(navController, route, popUP)
+				}
 			)
 		}
 		composable(
 			WorkoutDetailsDestination.routeWithArgs,
 			arguments = listOf(navArgument(WorkoutDetailsDestination.workoutIdArgs) {
-				type = NavType.IntType
+				type = NavType.StringType
 			})
 		) {
 			WorkoutDetailsScreen(
-				navigateUp = { navController.navigateUp()}
+				navigateUp = { navController.navigateUp() }
 			)
 		}
 		composable(
 			route = StudentDetailsDestination.routeWithArg,
 			arguments = listOf(navArgument(StudentDetailsDestination.studentIdArg) {
-				type = NavType.IntType
+				type = NavType.StringType
 			})
 		) {
 			StudentDetailsScreen(

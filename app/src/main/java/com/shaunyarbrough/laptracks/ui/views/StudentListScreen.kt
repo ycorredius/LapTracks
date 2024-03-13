@@ -53,7 +53,7 @@ object StudentListDestination : NavigationDestination {
 @Composable
 fun StudentListScreen(
   viewModel: StudentListViewModel = hiltViewModel(),
-  navigateToStudentDetails: (Int) -> Unit,
+  navigateToStudentDetails: (String) -> Unit,
   navigateUp: () -> Unit,
   navigateToStudentEntry: () -> Unit,
   navController: NavHostController
@@ -88,7 +88,7 @@ fun StudentListScreen(
 fun StudentListBody(
   students: List<StudentUiModel>,
   modifier: Modifier = Modifier,
-  navigateToStudentDetails: (Int) -> Unit,
+  navigateToStudentDetails: (String) -> Unit,
   navigateToStudentEntry: () -> Unit
 ) {
   Column(modifier = Modifier
@@ -155,8 +155,8 @@ fun StudentListItem(
 @Preview
 fun StudentListBodyPreview() {
   StudentListBody(
-    students = listOf(StudentUiModel(student = Student(0,"bily","smith","bsmith"), workouts = listOf(
-      Workout(0, "somedate", emptyList(),"400",0, totalTime = 5_000L)
+    students = listOf(StudentUiModel(student = Student("best student id","bily","smith","bsmith", teamId = "best team id"), workouts = listOf(
+      Workout("best workout id", "somedate", emptyList(),"400","best student id", totalTime = 5_000L)
     ))),
     navigateToStudentDetails = {},
     navigateToStudentEntry = {}
