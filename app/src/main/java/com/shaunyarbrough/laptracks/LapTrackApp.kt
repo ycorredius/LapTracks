@@ -65,8 +65,8 @@ fun BottomBarRow(
 	navController: NavHostController,
 ) {
 	val tabList = listOf(
-		BottomBarRoutes.WORKOUT,
 		BottomBarRoutes.TEAM,
+		BottomBarRoutes.WORKOUT,
 	)
 	val navStackBackEntry by navController.currentBackStackEntryAsState()
 	val currentDestination = navStackBackEntry?.destination
