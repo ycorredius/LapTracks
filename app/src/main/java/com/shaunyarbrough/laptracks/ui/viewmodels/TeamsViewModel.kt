@@ -22,7 +22,7 @@ class TeamsViewModel @Inject constructor(
 		getTeams()
 	}
 
-	fun getTeams() {
+	private fun getTeams() {
 		viewModelScope.launch {
 			teamUiState = TeamUiState.Loading
 			teamUiState = try {

@@ -9,9 +9,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
-import com.shaunyarbrough.laptracks.LapTrackApp
 import com.shaunyarbrough.laptracks.ServiceLocator
-import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.StudentRoom
 import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.source.FakeStudentWorkoutRepository
@@ -45,7 +43,6 @@ class ParticipantsScreenTest {
 			navController = TestNavHostController(LocalContext.current).apply {
 				navigatorProvider.addNavigator(ComposeNavigator())
 			}
-			LapTrackApp(navController)
 		}
 	}
 

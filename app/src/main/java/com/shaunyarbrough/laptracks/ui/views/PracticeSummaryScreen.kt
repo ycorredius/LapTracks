@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.convertLongToString
-import com.shaunyarbrough.laptracks.data.StudentRoom
+import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.getLastLapTimeString
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
@@ -55,8 +55,8 @@ object ParticipantSummaryDestination : NavigationDestination {
 fun PracticeSummaryBody(
 	currentDate: String,
 	interval: String,
-	participants: Map<StudentRoom, List<Long>>,
-	setParticipantTime: (StudentRoom, Long) -> Unit,
+	participants: Map<Student, List<Long>>,
+	setParticipantTime: (Student, Long) -> Unit,
 	totalTime: Long,
 	isEnabled: Boolean,
 	isTimerRunning: Boolean,
@@ -190,8 +190,8 @@ fun PracticeSummaryScreen(
 
 @Composable
 private fun ParticipantSummaryLazyColumn(
-	participants: Map<StudentRoom, List<Long>>,
-	setParticipantTime: (StudentRoom, Long) -> Unit,
+	participants: Map<Student, List<Long>>,
+	setParticipantTime: (Student, Long) -> Unit,
 	totalTime: Long,
 	isEnabled: Boolean
 ) {
@@ -241,8 +241,7 @@ fun PracticeSummaryScreenPreview() {
 			isEnabled = false,
 			onStartClick = {},
 			participants = mapOf(
-				StudentRoom(
-					id = 0,
+				Student(
 					firstName = "Billy",
 					lastName = "Smith",
 					displayName = "BSmith",

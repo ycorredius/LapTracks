@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.shaunyarbrough.laptracks.LapTrackAppTopAppBar
 import com.shaunyarbrough.laptracks.R
 import com.shaunyarbrough.laptracks.data.DataSource
-import com.shaunyarbrough.laptracks.data.StudentRoom
+import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.ui.navigation.NavigationDestination
 import com.shaunyarbrough.laptracks.ui.theme.LapTracksTheme
 import com.shaunyarbrough.laptracks.ui.viewmodels.WorkoutViewModel
@@ -92,7 +92,7 @@ fun IntervalScreen(
 
 @Composable
 private fun IntervalBody(
-  participants: Map<StudentRoom, List<Long>>,
+  participants: Map<Student, List<Long>>,
   selectedInterval: String,
   setInterval: (String) -> Unit,
   navigateToParticipantSummary: () -> Unit,
@@ -219,7 +219,7 @@ private fun IntervalDropdownMenu(
 fun IntervalScreenPreview() {
   LapTracksTheme {
     IntervalBody(
-      participants = mapOf(StudentRoom(id = 0, "Billy","Smith", "BSmith") to listOf(1_000L, 2_000L)),
+      participants = mapOf(Student(id = "", "Billy","Smith", "BSmith") to listOf(1_000L, 2_000L)),
       selectedInterval = "800",
       setInterval = {},
       navigateToParticipantSummary = {},

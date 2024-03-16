@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface StudentService {
 	val students: Flow<List<Student>>
 	suspend fun getStudent(id: String): Student?
+	suspend fun getStudents(id: String): List<Student?>
 	suspend fun getStudentWithWorkouts(id: String): Flow<StudentWithWorkouts>
 	suspend fun createStudent(student: Student)
 	suspend fun updateStudent(student: Student)

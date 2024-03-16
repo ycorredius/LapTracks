@@ -1,12 +1,14 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.shaunyarbrough.laptracks.data.Student
-import com.shaunyarbrough.laptracks.data.StudentRoom
-import com.shaunyarbrough.laptracks.data.StudentWorkoutRepository
 import com.shaunyarbrough.laptracks.data.WorkoutRoom
+import com.shaunyarbrough.laptracks.service.StudentService
+import com.shaunyarbrough.laptracks.service.TeamService
 import com.shaunyarbrough.laptracks.ui.views.ParticipantDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,100 +23,137 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
-	private val studentWorkoutRepository: StudentWorkoutRepository,
-) : ViewModel() {
-  companion object {
-    private const val TIMEOUT_MILLIS = 5_000L
-  }
+	private val studentService: StudentService,
+	private val teamService: TeamService
+) : LapTrackViewModel() {
 
-  private val _uiState = MutableStateFlow(WorkoutUiState())
-  val workoutUiState: StateFlow<WorkoutUiState> = _uiState.asStateFlow()
+	private val _uiState = MutableStateFlow(WorkoutUiState())
+	val workoutUiState: StateFlow<WorkoutUiState> = _uiState.asStateFlow()
 
-  val studentsUiState = StudentUiState()
+	var teamUiState: TeamUiState by mutableStateOf(TeamUiState.Loading)
+		private set
 
-  fun setParticipants(participant: StudentRoom) {
-    _uiState.update { currentState ->
-      val newParticipants =
-        if (currentState.participantsList.containsKey(participant)) {
-          currentState.participantsList.filter { it.key != participant}
-        } else {
-          currentState.participantsList + mapOf(participant to emptyList())
-        }
-      currentState.copy(participantsList = newParticipants)
-    }
-  }
+	var studentsUiState: StudentsUiState by mutableStateOf(StudentsUiState.Loading)
+		private set
 
-  fun setInterval(interval: String) {
-    _uiState.update { currentState ->
-      currentState.copy(interval = interval)
-    }
-  }
+	init {
+		getTeams()
+	}
 
-  fun setParticipantTime(participant: StudentRoom, timeStamp: Long) {
-    _uiState.update { currentState ->
-      val newMap = currentState.participantsList.keys.associateWith { key ->
-        currentState.participantsList.getValue(key) + if (key == participant) {
-          listOf(timeStamp)
-        } else {
-          emptyList()
-        }
-      }
-      currentState.copy(participantsList = newMap)
-    }
-  }
+	private fun getTeams() {
+		viewModelScope.launch {
+			teamUiState = TeamUiState.Loading
+			teamUiState = try {
+				TeamUiState.Success(teamService.getTeams())
+			} catch (e: Exception) {
+				TeamUiState.Error
+			}
+		}
+	}
 
-  fun resetWorkout() {
-    _uiState.value = WorkoutUiState()
-  }
+	fun getStudents(teamId: String): StudentsUiState {
+		launchCatching {
+			studentsUiState = StudentsUiState.Loading
+			studentsUiState = try {
+				StudentsUiState.Success(studentService.getStudents(teamId))
+			} catch (e: Exception) {
+				StudentsUiState.Error
+			}
+		}
+		return studentsUiState
+	}
 
-  fun saveWorkout() {
-    viewModelScope.launch(Dispatchers.IO) {
+	suspend fun updateStudent(teamId: String): List<Student?> {
+		return studentService.getStudents(teamId)
+	}
+
+	fun setParticipants(participant: Student) {
+		_uiState.update { currentState ->
+			val newParticipants =
+				if (currentState.participantsList.containsKey(participant)) {
+					currentState.participantsList.filter { it.key != participant }
+				} else {
+					currentState.participantsList + mapOf(participant to emptyList())
+				}
+			currentState.copy(participantsList = newParticipants)
+		}
+	}
+
+	fun setInterval(interval: String) {
+		_uiState.update { currentState ->
+			currentState.copy(interval = interval)
+		}
+	}
+
+	fun setParticipantTime(participant: Student, timeStamp: Long) {
+		_uiState.update { currentState ->
+			val newMap = currentState.participantsList.keys.associateWith { key ->
+				currentState.participantsList.getValue(key) + if (key == participant) {
+					listOf(timeStamp)
+				} else {
+					emptyList()
+				}
+			}
+			currentState.copy(participantsList = newMap)
+		}
+	}
+
+	fun resetWorkout() {
+		_uiState.value = WorkoutUiState()
+	}
+
+	fun saveWorkout() {
+		viewModelScope.launch(Dispatchers.IO) {
 //      workoutUiState.value.participantsList.forEach {
 //        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
 //      }
-    }
-  }
+		}
+	}
 
-  fun updateTotalTime(totalTime: Long){
-    _uiState.update {
-      it.copy(totalTime = totalTime)
-    }
-  }
+	fun updateTotalTime(totalTime: Long) {
+		_uiState.update {
+			it.copy(totalTime = totalTime)
+		}
+	}
 
-//  fun launchTime(isTimerRunning: Boolean){
-//    viewModelScope.launch {
-//      if (isTimerRunning) {
-//        delay(100)
-//         _uiState.update {
-//           it.copy(totalTime = it.totalTime + 100L)
-//         }
-//      }
-//    }
-//  }
-
-  fun onCancelClick(
-    navController: NavHostController
-  ) {
-    resetWorkout()
-    navController.navigate(ParticipantDestination.route)
-  }
+	fun onCancelClick(
+		navController: NavHostController
+	) {
+		resetWorkout()
+		navController.navigate(ParticipantDestination.route)
+	}
 }
 
 //TODO: Reconfigure this to create an more readable and optimized experience
-fun workoutDetailsToWorkout(studentId: Int, laps: List<Long>, date: String, interval: String, totalTime: Long): WorkoutRoom{
-  return WorkoutRoom(id = 0,date = date, studentId = studentId, lapList = laps, interval = interval, totalTime = totalTime)
+fun workoutDetailsToWorkout(
+	studentId: Int,
+	laps: List<Long>,
+	date: String,
+	interval: String,
+	totalTime: Long
+): WorkoutRoom {
+	return WorkoutRoom(
+		id = 0,
+		date = date,
+		studentId = studentId,
+		lapList = laps,
+		interval = interval,
+		totalTime = totalTime
+	)
 }
 
 data class WorkoutUiState(
-  val participantsList: Map<StudentRoom, List<Long>> = mapOf(),
-  val interval: String = "",
-  val date: String = SimpleDateFormat("MM-dd-yyyy").format(Date()),
-  val totalTime: Long = 0L
+	val participantsList: Map<Student, List<Long>> = mapOf(),
+	val interval: String = "",
+	val date: String = SimpleDateFormat("MM-dd-yyyy").format(Date()),
+	val totalTime: Long = 0L,
 )
 
-data class StudentsUiState(
-  val studentsList: List<Student> = listOf()
-)
+sealed interface StudentsUiState {
+	data class Success(val students: List<Student?>) : StudentsUiState
+	data object Loading : StudentsUiState
+	data object Error : StudentsUiState
+}
 
 // TODO: This will be used soon when viewing and editing a view.
 //data class WorkoutDetails(

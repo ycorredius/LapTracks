@@ -1,6 +1,6 @@
 package com.shaunyarbrough.laptracks
 
-import com.shaunyarbrough.laptracks.data.StudentRoom
+import com.shaunyarbrough.laptracks.data.Student
 
 fun convertLongToString(timeStamp: Long): String {
 	val milliSec = "%02d".format((timeStamp % (60 * 1000)) / 1000)
@@ -10,7 +10,7 @@ fun convertLongToString(timeStamp: Long): String {
 	return "${min}:${sec}.${milliSec}"
 }
 
-fun formatResults(participantTimes: Map<StudentRoom, List<Long>>): String {
+fun formatResults(participantTimes: Map<Student, List<Long>>): String {
 	var workout = ""
 	for ((key, value) in participantTimes) {
 		val times = value.map { time ->

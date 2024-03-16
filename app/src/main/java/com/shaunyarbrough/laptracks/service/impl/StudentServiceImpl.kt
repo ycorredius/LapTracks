@@ -27,6 +27,14 @@ class StudentServiceImpl @Inject constructor() : StudentService {
 			.get().await().toObject<Student>()
 	}
 
+	override suspend fun getStudents(id: String): List<Student?> {
+		return Firebase.firestore
+			.collection(STUDENT_COLLECTION)
+			.whereEqualTo("teamId", id)
+			.get()
+			.await().toObjects<Student>()
+	}
+
 	override suspend fun getStudentWithWorkouts(id: String): Flow<StudentWithWorkouts> = flow {
 		val studentDoc = Firebase.firestore
 			.collection(STUDENT_COLLECTION)
