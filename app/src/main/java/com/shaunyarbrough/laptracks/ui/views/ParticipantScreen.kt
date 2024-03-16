@@ -106,7 +106,7 @@ fun ParticipantBody(
 	onCheckBoxChange: (Student) -> Unit,
 	updateStudents: (String) -> Unit = {}
 ) {
-	var selectedTeam by remember { mutableStateOf(Pair("Team name", "Team Id")) }
+	var selectedTeam by remember { mutableStateOf(Pair(teams.first().name, teams.first().id)) }
 	var isExpanded by remember { mutableStateOf(false) }
 	Column(
 		modifier = Modifier
@@ -222,7 +222,7 @@ fun Participants(
 	participants: Map<Student, List<Long>>,
 	onCheckBoxChange: (Student) -> Unit,
 
-) {
+	) {
 	if (students.isEmpty()) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),

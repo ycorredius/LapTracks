@@ -1,21 +1,12 @@
 package com.shaunyarbrough.laptracks.ui.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shaunyarbrough.laptracks.data.Student
 import com.shaunyarbrough.laptracks.data.Workout
-import com.shaunyarbrough.laptracks.data.WorkoutRepository
-import com.shaunyarbrough.laptracks.service.StudentService
 import com.shaunyarbrough.laptracks.service.WorkoutService
 import com.shaunyarbrough.laptracks.ui.views.WorkoutDetailsDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,6 +45,7 @@ data class WorkoutDetails(
 	val lapList: List<Long> = emptyList(),
 	val interval: String = "",
 	val totalTime: Long = 0L,
+	val studentId: String = ""
 )
 
 data class WorkoutDetailsUiState(

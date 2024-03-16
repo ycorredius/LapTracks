@@ -85,8 +85,9 @@ class StudentServiceImpl @Inject constructor() : StudentService {
 
 	private suspend fun getWorkouts(studentId: String): List<Workout?> {
 		return Firebase.firestore
+			.collection(STUDENT_COLLECTION)
+			.document(studentId)
 			.collection(WORKOUT_COLLECTION)
-			.whereEqualTo("studentId", studentId)
 			.get().await().toObjects<Workout>()
 	}
 }

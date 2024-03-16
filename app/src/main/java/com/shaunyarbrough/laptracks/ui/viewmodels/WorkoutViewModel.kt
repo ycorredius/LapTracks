@@ -6,9 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.shaunyarbrough.laptracks.data.Student
+import com.shaunyarbrough.laptracks.data.Workout
 import com.shaunyarbrough.laptracks.data.WorkoutRoom
 import com.shaunyarbrough.laptracks.service.StudentService
 import com.shaunyarbrough.laptracks.service.TeamService
+import com.shaunyarbrough.laptracks.service.WorkoutService
 import com.shaunyarbrough.laptracks.ui.views.ParticipantDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class WorkoutViewModel @Inject constructor(
 	private val studentService: StudentService,
-	private val teamService: TeamService
+	private val teamService: TeamService,
+	private val workoutService: WorkoutService
 ) : LapTrackViewModel() {
 
 	private val _uiState = MutableStateFlow(WorkoutUiState())
@@ -104,9 +107,17 @@ class WorkoutViewModel @Inject constructor(
 
 	fun saveWorkout() {
 		viewModelScope.launch(Dispatchers.IO) {
-//      workoutUiState.value.participantsList.forEach {
-//        studentWorkoutRepository.insertWorkout(workoutDetailsToWorkout(it.key.id,it.value,workoutUiState.value.date, workoutUiState.value.interval, workoutUiState.value.totalTime))
-//      }
+			workoutUiState.value.participantsList.forEach {
+				participant ->
+				val workout = Workout(
+					date = SimpleDateFormat("MM-dd-yyyy").format(Date()),
+					interval = workoutUiState.value.interval,
+					lapList = participant.value,
+					studentId = participant.key.id,
+					totalTime = workoutUiState.value.totalTime
+				)
+				workoutService.createWorkout(workout)
+			}
 		}
 	}
 
@@ -154,10 +165,3 @@ sealed interface StudentsUiState {
 	data object Loading : StudentsUiState
 	data object Error : StudentsUiState
 }
-
-// TODO: This will be used soon when viewing and editing a view.
-//data class WorkoutDetails(
-//  val date: String = "",
-//  val lapList: List<Long> = emptyList(),
-//  val studentId: Int = 0
-//)
